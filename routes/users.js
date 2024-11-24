@@ -1,9 +1,15 @@
 var express = require('express');
 var router = express.Router();
+const path = require('path');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+// module.exports = function (db) {
+  /* GET users . */
+  router.get('/', function(req, res, next) {
+    
+    res.render('list');
+  });
 
 module.exports = router;
+
+
+

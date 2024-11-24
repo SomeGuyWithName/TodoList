@@ -1,9 +1,61 @@
-<%- include('partials/header.ejs') %>
+<%- include('partial/header.ejs') %>
+<div class="card">
+  <div class="card-header text-center">
+      <h2>MongoDB BREADS(Browse, Read, Edit, Add, Delete, Sorting)</h2>
+          </div>
+              <div class="card-body">
+                  <div class="row">
+                      <div class="col-md-2 mb-3 mb-md-0">
+                              <div class="input-group">
+                                      <span class="input-group-text">Show</span>
+                                          <select class="form-control text-center" id="limit" name="limit">
+                                              <option value="1">5</option>
+                                              <option value="2">10</option>
+                                              <option value="3">all</option>
+                                          </select>
+                                      </select>
+                                      <span class="input-group-text">entries</span>
+                                  </div>
+                              </div>
+                              <div class="col-md-9 mb-3">
+                                  <div class="input-group">
+                                      <input type="text" class="form-control" id="search" name="search" placeholder="Search">
+                                      <button type="submit" class="btn btn-info"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                      <button type="button" class="btn btn-warning" onclick="window.location.href='/todos';"><i
+                                      class="fa-solid fa-arrows-rotate"></i></button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </form>
+                      </div>
+                      <div class="card-footer">
+                      <a href="/" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                          <ul class="pagination float-end">
+                            <li class="page-item">
+                              <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                              </a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                              <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                              </a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+            </div>
+            <script>
+              // const createData = async (limit, search) => {
+              //   try {
+              //     const response = await fetch
+              //   }
+              // }
 
-<div class="card-header">
-    <h2 class="text-center">MongoDB BREADS(Browse, Read, Edit, Add, Delete, Sorting)</h2>
-</div>
-<div class="card-body">
-</div>
 
-<%- include('partials/footer.ejs') %>
+            </script>
+
+<%- include('partial/footer.ejs') %>
