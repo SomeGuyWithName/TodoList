@@ -7,7 +7,6 @@ const logger = require('morgan');
 const usersRouter = require('./routes/users');
 const todosRouter = require('./routes/todos');
 
-
 const app = express();
 
 // view engine setup
@@ -19,6 +18,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.render('list');
+});
 
 app.use('/', usersRouter);
 app.use('/todos', todosRouter);

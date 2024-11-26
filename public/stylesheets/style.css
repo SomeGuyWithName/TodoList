@@ -7,3 +7,12 @@ a {
   color: #00B7FF;
 }
 
+.modal-body {
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px; /* Adds spacing between the label and input */
+}
+
