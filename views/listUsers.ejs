@@ -23,13 +23,13 @@
                         <div class="input-group">
                             <input type="text" class="form-control" id="search" name="search" placeholder="Search">
                             <button type="submit" class="btn btn-info"><i class="fa-solid fa-magnifying-glass"></i></button>
-                            <button type="button" class="btn btn-warning" onclick="window.location.href='/todos';"><i class="fa-solid fa-arrows-rotate"></i></button>
+                            <button type="button" class="btn btn-warning" onclick="resetSearch()"><i class="fa-solid fa-arrows-rotate"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="table-data"></div>
-            <table class="table table-striped">
+            <table id="users-table" class="table table-striped">
               <thead>
                 <tr>
                   <th scope="col" class="col-md-1 align-middle px-2">
@@ -46,7 +46,7 @@
                   </th>
                 </tr>
               </thead>
-              <tbody id="users-tbody">
+              <tbody>
               </tbody>
           </table>
           <div class="card-footer">
@@ -93,113 +93,155 @@
                     </div>
                 </div>
             </div>
-            <script>
-              let params =  {
+            <!-- <script>
+            // PARAMETERS
+            let params = {
+              page: 1,
+              sortBy: 'id',
+              sortMode: 'desc',
+              limit: 5,
+            };
+
+            // READ USERS DATA
+            const readData = () => {
+              $.ajax({
+                method: 'GET',
+                url: `http://localhost:3000/users`,
+                data: params,
+              })
+                .done(function (response) {
+                  const result = response.data || [];
+                  let html = '';
+                  result.forEach((item, index) => {
+                    html += `
+                      <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.name}</td>
+                        <td>${item.phone}</td>
+                        <td>
+                          <button type="button" onclick="editUser(${item.id})" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-pencil"></i>
+                          </button>
+                          <button type="button" onclick="showDelete(${item.id})" class="btn btn-danger btn-sm">
+                            <i class="fa-solid fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>`;
+                  });
+                  $('#users-table tbody').html(html);
+                })
+                .fail(function (jqXHR, textStatus) {
+                  alert('Failed to fetch users: ' + textStatus);
+                });
+            };
+
+            // SEARCH USERS
+            $('#search').on('input', () => {
+              const search = $('#search').val();
+              params = { ...params, search };
+              readData();
+            });
+
+            // RESET SEARCH
+            const resetSearch = () => {
+              $('#search').val('');
+              params = {
                 page: 1,
                 sortBy: 'id',
                 sortMode: 'desc',
-                limit: 10
-              }
+                limit: 5,
+              };
+              readData();
+            };
 
-          
+            // SORTING
+            $('#s-name, #s-phone').on('click', function () {
+              const field = this.id === 's-name' ? 'name' : 'phone';
+              params.sortBy = field;
+              params.sortMode = params.sortMode === 'asc' ? 'desc' : 'asc';
+              readData();
+            });
 
-              document.getElementById('add-form').addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const phone = document.getElementById('phone').value;
-                const name = document.getElementById('name`').value;
-                params = {...params, phone, name}
-              }
-              
-                
-                const createData = async (name, phone) => {
-                  try{
-                    const response = await fetch('http://localhost:3000/users', {
-                      method: 'POST',
-                      body: JSON.stringify({
-                        name: name,
-                        phone: phone
-                      })
-                    });
-                    const result = await response.json();
-                    readData();
-                    console.log('success', result);
-                  } catch (error) {
-                    console.error("Error:", error);
-                  }
-                }
+            // CHANGE LIMIT
+            $('#u-limit').on('change', () => {
+              const limit = $('#u-limit').val();
+              params.limit = limit === 'all' ? null : parseInt(limit);
+              readData();
+            });
 
-                document.getElementById('add-form').addEventListener('submit', async (event) => {
-                    event.preventDefault();
-                    const name = document.getElementById('name').value;
-                    const phone = document.getElementById('phone').value;
-                    createData(name, phone);
-                    formModal.hide();
-                    try {
-                        const response = await fetch('http://localhost:3000/users:id', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                name: name,
-                                phone: phone
-                            })
-                        });
-                        const data = await response.json();
-                        readData();
-                    } catch (error) {
-                        console.error("Error:", error);
-                    }
-                    const formModal = new bootstrap.Modal('#form-Modal',{
-                      keyboard : false
-                    });
-                    formModal.hide();
+            // EDIT USER
+            const editUser = (id) => {
+              $.ajax({
+                method: 'GET',
+                url: `http://localhost:3000/users/${id}`,
+              })
+                .done(function (user) {
+                  $('#name').val(user.name);
+                  $('#phone').val(user.phone);
+                  $('#form-modal-btn').attr('data-id', id); // Save ID for updates
+                  $('#form-Modal').modal('show');
                 })
-                document.getElementById('form-modal').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const name = document.getElementById('name').value;
-                    const phone = document.getElementById('phone').value;
-                    formModal('hide');
-                    const id = document.getElementById('id').value;
-                    fetch('http://localhost:3000/users/' + id, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            name: name,
-                            phone: phone
-                        })
-                    }).then(response => response.json())
-                })
-                const readData = async () => {
-                    try {
-                        const url = new URL('http://localhost:3000/users')
-                        url.search = new URLSearchParams(params);
-                        const response = await fetch(url);
-                        const result = await response.json();
-                        console.log('success', result); 
-                        let html = '';
-                        result.data.forEach((item, index) => { 
-                            html += `
-                                <tr>
-                                    <th scope="row">${index + result.offset + 1}</th>
-                                    <td>${item.Name}</td>
-                                    <td>${item.Phone}</td>
-                                    <td>${item.Actions}</td>
-                                    <td><a href=/users/${item.id} class="btn btn-primary btn-sm"><i class="fa-solid fa-pencil"></i></a>
-                                        <a href=/users/${item.id} class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                        document.getElementById('users-tbody').innerHTML = html;
-                    } catch (error) {
-                        console.error("Error:", error);
-                    }
-                }
-                window.onload = () => {
+                .fail(function () {
+                  alert('Failed to fetch user details.');
+                });
+            };
+
+            // SAVE USER
+            $('#users-form').on('submit', (e) => {
+              e.preventDefault();
+              const id = $('#form-modal-btn').attr('data-id');
+              const name = $('#name').val();
+              const phone = $('#phone').val();
+
+              const method = id ? 'PUT' : 'POST';
+              const url = id ? `http://localhost:3000/users/${id}` : `http://localhost:3000/users`;
+
+              $.ajax({
+                method: method,
+                url: url,
+                contentType: 'application/json',
+                data: JSON.stringify({ name, phone }),
+              })
+                .done(function () {
+                  $('#form-Modal').modal('hide');
                   readData();
-                }
-            </script>
-        </div>
+                })
+                .fail(function () {
+                  alert('Failed to save user.');
+                });
+            });
+
+            // DELETE USER
+            const removeUser = (id) => {
+              $.ajax({
+                method: 'DELETE',
+                url: `http://localhost:3000/users/${id}`,
+              })
+                .done(function () {
+                  readData();
+                })
+                .fail(function () {
+                  alert('Failed to delete user.');
+                });
+            };
+
+            // SHOW DELETE MODAL
+            const showDelete = (id) => {
+              $('#btn-delete').attr('data-id', id);
+              $('#delete-Modal').modal('show');
+            };
+
+            $('#btn-delete').on('click', function () {
+              const id = $(this).attr('data-id');
+              removeUser(id);
+            });
+
+            $(document).ready(() => {
+              readData();
+            });
+
+        </script> -->
     </div>
+</div>
 
     <%- include('partial/footer.ejs') %>
