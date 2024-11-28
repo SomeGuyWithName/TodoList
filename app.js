@@ -5,6 +5,12 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
+const usersRouter = require('./routes/users')(mongoose);
+// const todosRouter = require('./routes/todos')(connDb); 
+
+const app = express();
+
+
 const connDb = async () => {
   try {
     await mongoose.connect('mongodb://localhost:27017/tododb');
@@ -14,10 +20,7 @@ const connDb = async () => {
   }
 };
 
-const usersRouter = require('./routes/users')(connDb);
-// const todosRouter = require('./routes/todos')(connDb); 
-
-const app = express();
+app.connDb = connDb;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -53,6 +56,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 
 module.exports = app;

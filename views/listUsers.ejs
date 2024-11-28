@@ -1,247 +1,234 @@
 <%- include('partial/header.ejs') %>
 
-<body>
+  <body>
     <div class="container">
-        <div class="card mt-5">
-            <div class="card-header text-center">
-                <h2>MongoDB BREADS(Browse, Read, Edit, Add, Delete, Sorting)</h2>
+      <div class="card mt-5">
+        <div class="card-header text-center">
+          <h2>MongoDB BREADS(Browse, Read, Edit, Add, Delete, Sorting)</h2>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-2 mb-3 mb-md-0">
+              <div class="input-group">
+                <span class="input-group-text">Show</span>
+                <select class="form-control text-center" id="u-limit" name="u-limit">
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="all">all</option>
+                </select>
+                <span class="input-group-text">entries</span>
+              </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-2 mb-3 mb-md-0">
-                        <div class="input-group">
-                            <span class="input-group-text">Show</span>
-                            <select class="form-control text-center" id="u-limit" name="u-limit">
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="all">all</option>
-                            </select>
-                            <span class="input-group-text">entries</span>
-                        </div>
-                    </div>
-                    <div class="col-md-9 mb-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="search" name="search" placeholder="Search">
-                            <button type="submit" class="btn btn-info"><i class="fa-solid fa-magnifying-glass"></i></button>
-                            <button type="button" class="btn btn-warning" onclick="resetSearch()"><i class="fa-solid fa-arrows-rotate"></i></button>
-                        </div>
-                    </div>
+            <div class="col-md-9 mb-3">
+              <div class="input-group">
+                <input type="text" class="form-control" id="search" name="search" placeholder="Search">
+                <button type="submit" class="btn btn-info"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button type="button" class="btn btn-warning" onclick="resetSearch()"><i
+                    class="fa-solid fa-arrows-rotate"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-data"></div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" class="col-md-1 align-middle px-2">
+                <span>No.</span>
+              </th>
+              <th scope="col" class="col-md-3 align-middle px-2" id="s-name">
+                <span><i class="fa-solid fa-sort me-2"></i>Name</span>
+              </th>
+              <th scope="col" class="col-md-3 align-middle px-2" id="s-phone">
+                <span><i class="fa-solid fa-sort me-2"></i>Phone</span>
+              </th>
+              <th scope="col" class="col-md-2 align-middle px-2">
+                <span>Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="users-table">
+          </tbody>
+        </table>
+        <div class="card-footer">
+          <button type="button" class="btn btn-primary" onclick="showAdd()"><i class="fa-solid fa-plus"></i></button>
+          <ul class="pagination m-0 float-end" id="pagination">
+            <li class="page-item">
+              <a class="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form id="users-form">
+                <input type="hidden" id="id" name="id" value="">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="form-ModalLabel">User Form</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
-            <div class="table-data"></div>
-            <table id="users-table" class="table table-striped">
-              <thead>
-                <tr>
-                  <th scope="col" class="col-md-1 align-middle px-2">
-                    <span>No.</span>
-                  </th>
-                  <th scope="col" class="col-md-3 align-middle px-2" id="s-name">
-                    <span><i class="fa-solid fa-sort me-2"></i>Name</span>
-                  </th>
-                  <th scope="col" class="col-md-3 align-middle px-2" id="s-phone">
-                    <span><i class="fa-solid fa-sort me-2"></i>Phone</span>
-                  </th>
-                  <th scope="col" class="col-md-2 align-middle px-2">
-                    <span>Actions</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-          </table>
-          <div class="card-footer">
-            <button type="button" class="btn btn-primary" id="form-modal-btn" data-bs-toggle="modal" data-bs-target="#form-Modal"><i class="fa-solid fa-plus"></i></button>
-            <ul class="pagination m-0 float-end">
-              <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form id="users-form">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="form-ModalLabel">User Form</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="name" class="form-label" >Name</label>
-                                    <input type="text" class="form-control" id="name" name="name">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone</label>
-                                    <input type="number" class="form-control" id="phone" name="phone">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
+                <div class="modal-body">
+                  <div class="row mb-3">
+                    <label for="name" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="name" name="name">
                     </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label for="phone" class="col-sm-2 col-form-label">Phone</label>
+                    <div class="col-sm-10">
+                      <input type="number" class="form-control" id="phone" name="phone">
+                    </div>
+                  </div>
                 </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+              </form>
             </div>
-            <!-- <script>
-            // PARAMETERS
-            let params = {
-              page: 1,
-              sortBy: 'id',
-              sortMode: 'desc',
-              limit: 5,
-            };
-
-            // READ USERS DATA
-            const readData = () => {
-              $.ajax({
-                method: 'GET',
-                url: `http://localhost:3000/users`,
-                data: params,
-              })
-                .done(function (response) {
-                  const result = response.data || [];
-                  let html = '';
-                  result.forEach((item, index) => {
-                    html += `
-                      <tr>
-                        <td>${index + 1}</td>
-                        <td>${item.name}</td>
-                        <td>${item.phone}</td>
-                        <td>
-                          <button type="button" onclick="editUser(${item.id})" class="btn btn-primary btn-sm">
-                            <i class="fa-solid fa-pencil"></i>
-                          </button>
-                          <button type="button" onclick="showDelete(${item.id})" class="btn btn-danger btn-sm">
-                            <i class="fa-solid fa-trash"></i>
-                          </button>
-                        </td>
-                      </tr>`;
-                  });
-                  $('#users-table tbody').html(html);
-                })
-                .fail(function (jqXHR, textStatus) {
-                  alert('Failed to fetch users: ' + textStatus);
-                });
-            };
-
-            // SEARCH USERS
-            $('#search').on('input', () => {
-              const search = $('#search').val();
-              params = { ...params, search };
-              readData();
-            });
-
-            // RESET SEARCH
-            const resetSearch = () => {
-              $('#search').val('');
-              params = {
-                page: 1,
-                sortBy: 'id',
-                sortMode: 'desc',
-                limit: 5,
-              };
-              readData();
-            };
-
-            // SORTING
-            $('#s-name, #s-phone').on('click', function () {
-              const field = this.id === 's-name' ? 'name' : 'phone';
-              params.sortBy = field;
-              params.sortMode = params.sortMode === 'asc' ? 'desc' : 'asc';
-              readData();
-            });
-
-            // CHANGE LIMIT
-            $('#u-limit').on('change', () => {
-              const limit = $('#u-limit').val();
-              params.limit = limit === 'all' ? null : parseInt(limit);
-              readData();
-            });
-
-            // EDIT USER
-            const editUser = (id) => {
-              $.ajax({
-                method: 'GET',
-                url: `http://localhost:3000/users/${id}`,
-              })
-                .done(function (user) {
-                  $('#name').val(user.name);
-                  $('#phone').val(user.phone);
-                  $('#form-modal-btn').attr('data-id', id); // Save ID for updates
-                  $('#form-Modal').modal('show');
-                })
-                .fail(function () {
-                  alert('Failed to fetch user details.');
-                });
-            };
-
-            // SAVE USER
-            $('#users-form').on('submit', (e) => {
-              e.preventDefault();
-              const id = $('#form-modal-btn').attr('data-id');
-              const name = $('#name').val();
-              const phone = $('#phone').val();
-
-              const method = id ? 'PUT' : 'POST';
-              const url = id ? `http://localhost:3000/users/${id}` : `http://localhost:3000/users`;
-
-              $.ajax({
-                method: method,
-                url: url,
-                contentType: 'application/json',
-                data: JSON.stringify({ name, phone }),
-              })
-                .done(function () {
-                  $('#form-Modal').modal('hide');
-                  readData();
-                })
-                .fail(function () {
-                  alert('Failed to save user.');
-                });
-            });
-
-            // DELETE USER
-            const removeUser = (id) => {
-              $.ajax({
-                method: 'DELETE',
-                url: `http://localhost:3000/users/${id}`,
-              })
-                .done(function () {
-                  readData();
-                })
-                .fail(function () {
-                  alert('Failed to delete user.');
-                });
-            };
-
-            // SHOW DELETE MODAL
-            const showDelete = (id) => {
-              $('#btn-delete').attr('data-id', id);
-              $('#delete-Modal').modal('show');
-            };
-
-            $('#btn-delete').on('click', function () {
-              const id = $(this).attr('data-id');
-              removeUser(id);
-            });
-
-            $(document).ready(() => {
-              readData();
-            });
-
-        </script> -->
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+
+    <script>
+      let params = {
+        query: '',
+        page: 1,
+        sortBy: '_id',
+        sortMode: 'desc',
+        limit: 5,
+      }
+
+      let defaultUrl = 'http://localhost:3000/users';
+
+      // SHOW DATA
+      const fetchData = async () => {
+        try {
+          const response = await fetch(defaultUrl, {
+            method: 'GET'
+          });
+          const result = await response.json();
+
+          let html = '';
+          result.data.forEach((item, index) => {
+            html += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${item.name}</td>
+              <td>${item.phone}</td>
+              <td>
+                <button type="button" onclick="editUser(${item.id})" class="btn btn-success btn-sm">
+                  <i class="fa-solid fa-pencil"></i>
+                </button>
+                <button type="button" onclick="showDelete(${item.id})" class="btn btn-danger btn-sm">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+                 <a href="/todos/" class="btn btn-warning btn-sm"> <i class="fa-solid fa-right-to-bracket"></i>
+                </button>
+              </td>
+            </tr>`;
+          });
+          document.getElementById('users-table').innerHTML = html;
+        } catch (error) {
+          console.log('Failed to fetch users: ' + error);
+        }
+      };
+
+      // SAVED DATA
+      const savedata = async () => {
+        try {
+          const id = document.getElementById('id');
+          let url = defaultUrl
+          let method = 'POST'
+            if (id) {
+              url += `${defaultUrl}/${id}`;
+              method = 'PUT'
+            } 
+          const response = await fetch(url, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method,
+            body: JSON.stringify({
+              name: document.getElementById('name').value,
+              phone: document.getElementById('phone').value
+            }),
+          })
+          const result = await response.json();
+          fetchData();
+          formUserModal.hide();
+        } catch (error) {
+          console.log('Failed to fetch users: ' + error);
+        }
+      };
+
+      const showAdd = () => {
+        document.getElementById('name').value = '';
+        document.getElementById('phone').value = '';
+        formUserModal.show();
+      }
+      
+
+      const editUser = async (id) => {
+          try {
+            const response = await fetch(`${defaultUrl}/${id}`, {
+              method: 'GET',
+            })
+            const result = await response.json();
+            document.getElementById('id').value = result.id;
+            document.getElementById('name').value = result.name;
+            document.getElementById('phone').value = result.phone;
+            formUserModal.show();
+            fetchData();
+          } catch (err) {
+            console.log('Failed to update user details: ' + err);
+          }
+        } 
+
+      const formUserModal = new bootstrap.Modal(document.getElementById('form-Modal'));
+      const formUser = document.getElementById('users-form');
+
+      let name = document.getElementById('name');
+      let phone = document.getElementById('phone');
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // script akan jalan ketika dom selesai diload
+
+        formUser.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          try {
+            const response = await fetch(defaultUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ name: name.value, phone: phone.value }),
+            })
+            name.value = '';
+            phone.value = '';
+            formUserModal.hide(); 
+            fetchData();
+          } catch (error) {
+            console.log('Failed to fetch users: ' + error);
+          }
+        })
+
+        fetchData();
+      })
+    
+
+    </script>
 
     <%- include('partial/footer.ejs') %>
