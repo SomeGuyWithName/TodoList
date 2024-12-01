@@ -22,8 +22,8 @@
             <div class="col-md-9 mb-3">
               <div class="input-group">
                 <input type="text" class="form-control" id="search" name="search" placeholder="Search">
-                <button type="submit" class="btn btn-info"><i class="fa-solid fa-magnifying-glass"></i></button>
-                <button type="button" class="btn btn-warning" onclick="resetSearch()"><i
+                <button  class="btn btn-info" id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button type="button" class="btn btn-warning" id="reset-btn"><i
                     class="fa-solid fa-arrows-rotate"></i></button>
               </div>
             </div>
@@ -51,7 +51,8 @@
           </tbody>
         </table>
         <div class="card-footer">
-          <button type="button" class="btn btn-primary" onclick="showAdd()"><i class="fa-solid fa-plus"></i></button>
+          <button type="button" class="btn btn-primary" onclick="showModal('add')"><i
+              class="fa-solid fa-plus"></i></button>
           <ul class="pagination m-0 float-end" id="pagination">
             <li class="page-item">
               <a class="page-link" aria-label="Previous">
@@ -78,16 +79,19 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <div class="row mb-3">
-                    <label for="name" class="col-sm-2 col-form-label">Name</label>
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" id="name" name="name">
+                  <p id="modal-message"></p>
+                  <div id="users-data">
+                    <div class="row mb-3">
+                      <label for="name" class="col-sm-2 col-form-label">Name</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="name" name="name">
+                      </div>
                     </div>
-                  </div>
-                  <div class="row mb-3">
-                    <label for="phone" class="col-sm-2 col-form-label">Phone</label>
-                    <div class="col-sm-10">
-                      <input type="number" class="form-control" id="phone" name="phone">
+                    <div class="row mb-3">
+                      <label for="phone" class="col-sm-2 col-form-label">Phone</label>
+                      <div class="col-sm-10">
+                        <input type="number" class="form-control" id="phone" name="phone">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -108,19 +112,35 @@
         page: 1,
         sortBy: '_id',
         sortMode: 'desc',
-        limit: 5,
+        limit: 55,
+        search: ''
       }
 
-      let defaultUrl = 'http://localhost:3000/users';
+
+      const formUserModal = new bootstrap.Modal(document.getElementById('form-Modal'));
+      const formUser = document.getElementById('users-form');
+      const formMessage = document.getElementById('modal-message');
+      const usersData = document.getElementById('users-data');
+      const nameSearch = document.getElementById('name');
+      const phoneSearch = document.getElementById('phone');
+
+      formMessage.style.display = 'none';
+      let id = document.getElementById('id');
+      let name = document.getElementById('name');
+      let phone = document.getElementById('phone');
+      let formMode = '';
+      let defaultUrl = '/users';
+
+     
 
       // SHOW DATA
       const fetchData = async () => {
         try {
+          const query = new URLSearchParams(params).toString();
           const response = await fetch(defaultUrl, {
             method: 'GET'
-          });
+          })
           const result = await response.json();
-
           let html = '';
           result.data.forEach((item, index) => {
             html += `
@@ -129,10 +149,10 @@
               <td>${item.name}</td>
               <td>${item.phone}</td>
               <td>
-                <button type="button" onclick="editUser(${item.id})" class="btn btn-success btn-sm">
+                <button type="button" onclick="showModal('edit','${item._id}')" class="btn btn-success btn-sm">
                   <i class="fa-solid fa-pencil"></i>
                 </button>
-                <button type="button" onclick="showDelete(${item.id})" class="btn btn-danger btn-sm">
+                <button type="button" onclick="showModal('delete','${item._id}')" class="btn btn-danger btn-sm">
                   <i class="fa-solid fa-trash"></i>
                 </button>
                  <a href="/todos/" class="btn btn-warning btn-sm"> <i class="fa-solid fa-right-to-bracket"></i>
@@ -146,89 +166,130 @@
         }
       };
 
-      // SAVED DATA
-      const savedata = async () => {
-        try {
-          const id = document.getElementById('id');
-          let url = defaultUrl
-          let method = 'POST'
-            if (id) {
-              url += `${defaultUrl}/${id}`;
-              method = 'PUT'
-            } 
-          const response = await fetch(url, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            method,
-            body: JSON.stringify({
-              name: document.getElementById('name').value,
-              phone: document.getElementById('phone').value
-            }),
-          })
+      const urlUsers = async () => {
+        let url = `/users?query=${params.query}&page=${params.page}&sortBy=${params.sortBy}&sortMode=${params.sortMode}&limit=${params.limit}`;
+        const response = await fetch(url)
           const result = await response.json();
-          fetchData();
-          formUserModal.hide();
+
+          if (result.result && Array.isArray(result.data)) {
+            users = result.result;
+            fetchData(result.result);
+          } else {
+            console.log('Failed to read URL users: ', result.message);
+            
+        }
+      }
+
+
+      const showModal = (mode, id, name = '', phone = '') => {
+        if (mode === 'add') {
+          formMessage.innerHTML = '';
+          formMessage.style.display = 'none';
+          usersData.style.display = 'block';
+          formMode = mode;
+          document.getElementById('id').value = '';
+          document.getElementById('name').value = '';
+          document.getElementById('phone').value = '';
+          name.value = '';
+          phone.value = '';
+        } else if (mode === 'edit') {
+          formMessage.innerHTML = '';
+          formMessage.style.display = 'none';
+          usersData.style.display = 'block';
+          name.value = '';
+          phone.value = '';
+          formMode = mode;
+          getUser(mode, id);
+        } else if (mode === 'delete') {
+          formMode = mode;
+          getUser(mode, id);
+        }
+        formUserModal.show();
+      }
+
+      const getUser = async (mode, id) => {
+        try {
+          const response = await fetch(`${defaultUrl}/${id}`, {
+            method: 'GET'
+          });
+          const result = await response.json();
+          document.getElementById('id').value = result._id;
+          document.getElementById('name').value = result.name;
+          document.getElementById('phone').value = result.phone;
+          if (mode === 'delete') {
+            const message = `Are you sure you want to delete "${result.name}"?`;
+            formMessage.innerHTML = message;
+            formMessage.style.display = 'block';
+            usersData.style.display = 'none';
+          }
+
         } catch (error) {
           console.log('Failed to fetch users: ' + error);
         }
-      };
-
-      const showAdd = () => {
-        document.getElementById('name').value = '';
-        document.getElementById('phone').value = '';
-        formUserModal.show();
       }
-      
 
-      const editUser = async (id) => {
-          try {
-            const response = await fetch(`${defaultUrl}/${id}`, {
-              method: 'GET',
-            })
-            const result = await response.json();
-            document.getElementById('id').value = result.id;
-            document.getElementById('name').value = result.name;
-            document.getElementById('phone').value = result.phone;
-            formUserModal.show();
-            fetchData();
-          } catch (err) {
-            console.log('Failed to update user details: ' + err);
-          }
-        } 
-
-      const formUserModal = new bootstrap.Modal(document.getElementById('form-Modal'));
-      const formUser = document.getElementById('users-form');
-
-      let name = document.getElementById('name');
-      let phone = document.getElementById('phone');
 
       document.addEventListener('DOMContentLoaded', () => {
         // script akan jalan ketika dom selesai diload
 
+        document.getElementById('form-Modal').addEventListener('hidden.bs.modal', () => {
+          formMessage.style.display = 'none';
+          formMessage.innerHTML = '';
+          usersData.style.display = 'block';
+          id.value = '';
+          name.value = '';
+          phone.value = '';
+        });
+
+        document.getElementById('search-btn').addEventListener('click', () => {
+          search = document.getElementById('search').value;
+          urlUsers()
+        });
+        document.getElementById('search').value = '';
+        urlUsers()
+        
+
+      
+
         formUser.addEventListener('submit', async (e) => {
+          console.log(`type id: ${id.value}, type name: ${name.value}, type phone: ${phone.value}`);
           e.preventDefault();
           try {
-            const response = await fetch(defaultUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ name: name.value, phone: phone.value }),
-            })
+            if (formMode === 'add') {
+              const response = await fetch(defaultUrl, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: name.value, phone: phone.value }),
+              })
+            } else if (formMode === 'edit') {
+              const response = await fetch(`${defaultUrl}/${id.value}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ _id: id.value, name: name.value, phone: phone.value }),
+              })
+            } else if (formMode === 'delete') {
+              const response = await fetch(`${defaultUrl}/${id.value}`, {
+                method: 'DELETE',
+              })
+            }
             name.value = '';
             phone.value = '';
-            formUserModal.hide(); 
+            formUserModal.hide();
             fetchData();
           } catch (error) {
             console.log('Failed to fetch users: ' + error);
           }
-        })
+        });
+
 
         fetchData();
       })
-    
+
 
     </script>
 
-    <%- include('partial/footer.ejs') %>
+    <%- include('partial/footer.ejs') %>  

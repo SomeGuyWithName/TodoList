@@ -3,6 +3,7 @@ var router = express.Router();
 
 
 module.exports = (mongoose) => {
+  const ObjectId = mongoose.Types.ObjectId;
   const User = mongoose.model('users', new mongoose.Schema({ name: String, phone: String }, {versionKey: false}));
 
   router.get('/', async function (req, res) {    
@@ -50,33 +51,45 @@ module.exports = (mongoose) => {
       const result = await User.create({ name, phone });
       res.status(201).json({"_id": result._id, "name": result.name, "phone": result.phone});
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('Error adding user:', error);
       res.status(500).json('Internal Server Error');
     }
   });
 
-  router.put('/:id', userValidation, async (req, res) => {
-    try{
-      const {name, phone} = req.body;
-      const userId = req.params.id;
-
-      await User.updateOne({ _id: new ObjectId(userId) }, { $set: { name, phone } });
-      const updateUser = await User.findOne({ _id: new ObjectId(userId) });
-
-      if (!updateUser) {
-        return res.status(404).json('User not found');
-      }
-
-      res.status(201).json({
-        "_id": updateUser._id,
-        "name": updateUser.name,
-        "phone": updateUser.phone});
+  router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+      const result = await User.findOne({ _id: new ObjectId(id) });
+      res.status(200).json(result);
     } catch (error) {
       console.error('Error fetching user:', error);
       res.status(500).json('Internal Server Error');
     }
+  })
+
+  router.put('/:id',  async (req, res) => {
+    try{
+      const {name, phone} = req.body;
+      await User.updateOne({_id: new ObjectId(req.params.id)}, {$set: {name, phone}});
+      res.status(201).json({"_id": req.params.id, name, phone});
+    } catch (error) {
+      console.error('Error editing user:', error);
+      res.status(500).json('Internal Server Error');
+    }
   });
 
+  router.delete('/:id',  async (req, res) => {
+    const { id } = req.params;
+    try{
+      const result = await User.findOne({ _id: new ObjectId(id) });
+      await User.deleteOne({_id: new ObjectId(id)});
+      res.status(201).json(result);
+    } catch (error) {
+      console.error('Error editing user:', error);
+      res.status(500).json('Internal Server Error');
+    }
+  });
+  
   // router.get('/:id', async (req, res) => {
   //   try {
   //     const user = await mongoose.collection('users').findOne({ _id: new ObjectId(req.params.id) });
