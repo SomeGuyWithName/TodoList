@@ -10,8 +10,8 @@
           <div class="row">
             <div class="col-md-2 mb-3 mb-md-0">
               <div class="input-group">
-                <span class="input-group-text">Show</span>
-                <select class="form-control text-center" id="u-limit" name="u-limit">
+                <span for="limit" class="input-group-text">Show</span>
+                <select class="form-control text-center" id="limit" name="limit">
                   <option value="5">5</option>
                   <option value="10">10</option>
                   <option value="all">all</option>
@@ -23,121 +23,122 @@
               <div class="input-group">
                 <input type="text" class="form-control" id="search" name="search" placeholder="Search">
                 <button type="button" class="btn btn-outline-dark" id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-                <button type="button" class="btn btn-outline-warning" id="reset-btn"><i class="fa-solid fa-arrows-rotate"></i></button>
+                <button type="button" class="btn btn-outline-warning" id="reset-btn"><i
+                    class="fa-solid fa-arrows-rotate"></i></button>
               </div>
             </div>
           </div>
         </div>
         <div class="table-data">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col" class="col-md-1 align-middle px-2">
-                <span>No.</span>
-              </th>
-              <th scope="col" class="col-md-3 align-middle px-2" id="s-name">
-                <span><i class="fa-solid fa-sort me-2"></i>Name</span>
-              </th>
-              <th scope="col" class="col-md-3 align-middle px-2" id="s-phone">
-                <span><i class="fa-solid fa-sort me-2"></i>Phone</span>
-              </th>
-              <th scope="col" class="col-md-2 align-middle px-2">
-                <span>Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody id="users-table">
-          </tbody>
-        </table>
-      </div>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" class="col-md-1 align-middle px-2">
+                  <span>No.</span>
+                </th>
+                <th scope="col" class="col-md-3 align-middle px-2" id="s-name">
+                  <span><i class="fa-solid fa-sort me-2"></i>Name</span>
+                </th>
+                <th scope="col" class="col-md-3 align-middle px-2" id="s-phone">
+                  <span><i class="fa-solid fa-sort me-2"></i>Phone</span>
+                </th>
+                <th scope="col" class="col-md-2 align-middle px-2">
+                  <span>Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="users-table">
+            </tbody>
+          </table>
+        </div>
         <div class="card-footer d-flex flex-column flex-md-row justify-content-between align-items-center">
-          <button type="button" class="btn btn-primary" onclick="showModal('add')"><i class="fa-solid fa-plus"></i></button>
-          <div class="float-end" id="showPagination">
-          <nav aria-label="Page navigation">
-          <ul class="pagination m-0 float-end" id="pagination">
-          </ul>
-        </nav>
+          <button type="button" class="btn btn-primary" onclick="showModal('add')"><i
+              class="fa-solid fa-plus"></i></button>
+            <div class="me-3 mb-2 mb-md-0 text-center text-md-start" id="showPagination"></div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination m-0 float-end" id="pagination">
+              </ul>
+            </nav>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-        <div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <form id="users-form">
-                <input type="hidden" id="id" name="id" value="">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="form-ModalLabel">User Form</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <p id="modal-message"></p>
-                  <div id="users-data">
-                    <div class="row mb-3">
-                      <label for="name" class="col-sm-2 col-form-label">Name</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="name" name="name">
-                      </div>
+      <div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form id="users-form">
+              <input type="hidden" id="id" name="id" value="">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="form-ModalLabel">User Form</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p id="modal-message"></p>
+                <div id="users-data">
+                  <div class="row mb-3">
+                    <label for="name" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="name" name="name">
                     </div>
-                    <div class="row mb-3">
-                      <label for="phone" class="col-sm-2 col-form-label">Phone</label>
-                      <div class="col-sm-10">
-                        <input type="number" class="form-control" id="phone" name="phone">
-                      </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label for="phone" class="col-sm-2 col-form-label">Phone</label>
+                    <div class="col-sm-10">
+                      <input type="number" class="form-control" id="phone" name="phone">
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-              </form>
-            </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
           </div>
         </div>
-    <script>
+      </div>
+      <script>
 
-      let params = {
-        query: '',
-        page: 1,
-        currentPage: 1,
-        sortBy: '_id',
-        sortMode: 'desc',
-        limit: 5,
-        search: ''
-      }
+        let params = {
+          query: '',
+          sortBy: '_id',
+          sortMode: 'desc',
+          limit: 5,
+          search: ''
+        }
 
-      const formUserModal = new bootstrap.Modal(document.getElementById('form-Modal'));
-      const formUser = document.getElementById('users-form');
-      const formMessage = document.getElementById('modal-message');
-      const usersData = document.getElementById('users-data');
-      const nameSearch = document.getElementById('name');
-      const phoneSearch = document.getElementById('phone');
-      const pagination = document.getElementById('pagination');
-      const showPagination = document.getElementById('showPagination');
+        let currentPage = 1;
+        const formUserModal = new bootstrap.Modal(document.getElementById('form-Modal'));
+        const formUser = document.getElementById('users-form');
+        const formMessage = document.getElementById('modal-message');
+        const usersData = document.getElementById('users-data');
+        const pagination = document.getElementById('pagination');
+        const showPagination = document.getElementById('showPagination');
+        const limitSelect = document.getElementById('limit');
 
-      formMessage.style.display = 'none';
-      let id = document.getElementById('id');
-      let name = document.getElementById('name');
-      let phone = document.getElementById('phone');
-      let formMode = '';
-      let defaultUrl = '/users';
+        formMessage.style.display = 'none';
+        let id = document.getElementById('id');
+        let name = document.getElementById('name');
+        let phone = document.getElementById('phone');
+        let formMode = '';
+        let defaultUrl = '/users';
 
-      // SHOW DATA
-      const fetchData = async () => {
-        try {
-          const query = new URLSearchParams(params).toString();
-          const response = await fetch(defaultUrl, {
-            method: 'GET'
-          })
-          const result = await response.json();
+        // SHOW DATA
+        const fetchData = async () => {
+          try {
+            const offset = (currentPage - 1) * params.limit;
+            const query = new URLSearchParams(params).toString();
+            const response = await fetch(`${defaultUrl}?${query}`, {
+              method: 'GET'
+            })
+            const result = await response.json();
 
-          if (result && result.data) {
-          params.total = result.total;
-          let html = '';
-          result.data.forEach((item, index) => {
-            html += `
+            if (result && result.data) {
+              params.total = result.total;
+              let html = '';
+              result.data.forEach((item, index) => {
+                html += `
             <tr>
               <td>${index + 1}</td>
               <td>${item.name}</td>
@@ -153,199 +154,212 @@
                 </button>
               </td>
             </tr>`;
-          });
-          document.getElementById('users-table').innerHTML = html;
-          renderPagination();
-          }
-        } catch (error) {
-          console.log('Failed to fetch users: ' + error);
-        };
-      
-
-        if (limit !== 0) {
-          renderPagination(result);
-        } else {
-          pagination.innerHTML = '';
-          showPagination.textContent = `Showing all ${result} entries`;
+              });
+              document.getElementById('users-table').innerHTML = html;
+              renderPagination();
+            }
+          } catch (error) {
+            console.log('Failed to fetch users: ' + error);
+          };
         }
-      };
 
-      const renderPagination = (result) => {
-      const pagination = document.getElementById('pagination');
-      const totalPages = Math.ceil(params.total / params.limit); // Calculate total pages
-      const currentPage = params.page;
+        const renderPagination = () => {
+          const totalPages = Math.ceil(params.total / params.limit) || 1; // Fallback to 1 if params.limit or params.total is invalid
+          const currentPage = params.page || 1; // Default to page 1 if not set
 
-      pagination.innerHTML = ''; // Clear existing pagination
+          pagination.innerHTML = ''; // Clear existing pagination
 
-      if (totalPages > 1) {
-          // Previous button
+          if (params.total > 0) {
+            const startEntry = (currentPage - 1) * params.limit + 1;
+            const endEntry = Math.min(currentPage * params.limit, params.total);
+
+            showPagination.textContent = `Showing ${startEntry} to ${endEntry} of ${params.total} entries`;
+          } else {
+            showPagination.textContent = 'No entries found';
+            return;
+          }
+
+          // Handle Previous Button
           const prev = document.createElement('li');
           prev.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-          prev.innerHTML = `<a class="page-link" href="#" aria-label="Previous" onclick="goToPage(${currentPage - 1})"><span aria-hidden="true">&laquo;</span></a>`;
+          prev.innerHTML = `<a class="page-link" href="#" aria-label="Previous">&laquo;</a>`;
           prev.addEventListener('click', (event) => {
             event.preventDefault();
             if (currentPage > 1) {
-              currentPage --;
-              usersFetch();
-          }
+              params.page = currentPage - 1;
+              fetchData();
+            }
           });
           pagination.appendChild(prev);
 
-          // Page numbers
+          // Handle Page Numbers
           for (let i = 1; i <= totalPages; i++) {
-              const page = document.createElement('li');
-              page.className = `page-item ${i === currentPage ? 'active' : ''}`;
-              page.innerHTML = `
-                  <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>`;
-              pagination.appendChild(page);
+            const page = document.createElement('li');
+            page.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            page.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+            page.addEventListener('click', (event) => {
+              event.preventDefault();
+              params.page = i;
+              fetchData();
+            });
+            pagination.appendChild(page);
           }
 
-          // Next button
+          // Handle Next Button
           const next = document.createElement('li');
           next.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-          next.innerHTML = `
-              <a class="page-link" href="#" aria-label="Next" onclick="goToPage(${currentPage + 1})">
-                  <span aria-hidden="true">&raquo;</span>
-              </a>`;
-          pagination.appendChild(next);
-          }
-      };
-
-          // Navigate to specific page
-          const goToPage = (page) => {
-              if (page < 1 || page > Math.ceil(params.total / params.limit)) return; // Prevent invalid pages
-              params.page = page;
+          next.innerHTML = `<a class="page-link" href="#" aria-label="Next">&raquo;</a>`;
+          next.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (currentPage < totalPages) {
+              params.page = currentPage + 1;
               fetchData();
-          };
-
-      const usersFetch = async () => {
-      try {
-        const query = `/users?page=${params.currentPage}&limit=${params.limit}&sortBy=${params.sortBy}&sortMode=${params.sortMode}&query=${params.query.toString()}`
-        const response = await fetch(query)
-        const result = await response.json();
-
-        if (result.result && Array.isArray(result.data)) {
-          params.users = result.data; // Update the params.users array if needed
-          fetchData(); // Refresh the table
-        } else {
-          console.log('Failed to read URL users: ', result.message);
-        }
-      } catch (error) {
-        console.log('Error fetching users:', error);
-      }
-    };
-
-
-      const showModal = (mode, id, name = '', phone = '') => {
-        if (mode === 'add') {
-          formMessage.innerHTML = '';
-          formMessage.style.display = 'none';
-          usersData.style.display = 'block';
-          formMode = mode;
-          document.getElementById('id').value = '';
-          document.getElementById('name').value = '';
-          document.getElementById('phone').value = '';
-          name.value = '';
-          phone.value = '';
-        } else if (mode === 'edit') {
-          formMessage.innerHTML = '';
-          formMessage.style.display = 'none';
-          usersData.style.display = 'block';
-          name.value = '';
-          phone.value = '';
-          formMode = mode;
-          getUser(mode, id);
-        } else if (mode === 'delete') {
-          formMode = mode;
-          getUser(mode, id);
-        }
-        formUserModal.show();
-      }
-
-      const getUser = async (mode, id) => {
-        try {
-          const response = await fetch(`${defaultUrl}/${id}`, {
-            method: 'GET'
-          });
-          const result = await response.json();
-          document.getElementById('id').value = result._id;
-          document.getElementById('name').value = result.name;
-          document.getElementById('phone').value = result.phone;
-          if (mode === 'delete') {
-            const message = `Are you sure you want to delete "${result.name}"?`;
-            formMessage.innerHTML = message;
-            formMessage.style.display = 'block';
-            usersData.style.display = 'none';
-          }
-
-        } catch (error) {
-          console.log('Failed to fetch users: ' + error);
-        }
-      }
-
-      document.getElementById('search-btn').addEventListener('click', () => {
-      params.query = document.getElementById('search').value.trim();
-      usersFetch();
-    });
-
-    document.getElementById('reset-btn').addEventListener('click', () => {
-      params.query = '';
-      document.getElementById('search').value = '';
-      usersFetch();
-    });
-
-
-      document.addEventListener('DOMContentLoaded', () => {
-        // script akan jalan ketika dom selesai diload
-
-        document.getElementById('form-Modal').addEventListener('hidden.bs.modal', () => {
-          formMessage.style.display = 'none';
-          formMessage.innerHTML = '';
-          usersData.style.display = 'block';
-          id.value = '';
-          name.value = '';
-          phone.value = '';
-        });
- 
-        formUser.addEventListener('submit', async (e) => {
-          console.log(`type id: ${id.value}, type name: ${name.value}, type phone: ${phone.value}`);
-          e.preventDefault();
-          try {
-            if (formMode === 'add') {
-              const response = await fetch(defaultUrl, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name: name.value, phone: phone.value }),
-              })
-            } else if (formMode === 'edit') {
-              const response = await fetch(`${defaultUrl}/${id.value}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ _id: id.value, name: name.value, phone: phone.value }),
-              })
-            } else if (formMode === 'delete') {
-              const response = await fetch(`${defaultUrl}/${id.value}`, {
-                method: 'DELETE',
-              })
             }
+          });
+          pagination.appendChild(next);
+        };
+
+
+        // Handle Limit Change
+        limitSelect.addEventListener('change', (event) => {
+          params.limit = event.target.value;
+          fetchData()
+        })
+
+        // FETCH DATA
+        const usersFetch = async () => {
+          try {
+            const query = `/users?page=${params.currentPage}&limit=${params.limit}&search=${params.search}&sortBy=${params.sortBy}&sortMode=${params.sortMode}&query=${params.query || ''}`
+            const response = await fetch(query)
+            const result = await response.json();
+
+            if (result.data && Array.isArray(result.data)) {
+              params.users = result.data; // Update the params.users array if needed
+              fetchData(); // Refresh the table
+            } else {
+              console.log('Failed to read URL users: ', result.message);
+            }
+          } catch (error) {
+            console.log('Error fetching users:', error);
+          }
+        };
+
+        // SHOW MODAL
+        const showModal = (mode, id, name = '', phone = '') => {
+          if (mode === 'add') {
+            formMessage.innerHTML = '';
+            formMessage.style.display = 'none';
+            usersData.style.display = 'block';
+            formMode = mode;
+            document.getElementById('id').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
             name.value = '';
             phone.value = '';
-            formUserModal.hide();
-            fetchData();
+          } else if (mode === 'edit') {
+            formMessage.innerHTML = '';
+            formMessage.style.display = 'none';
+            usersData.style.display = 'block';
+            name.value = '';
+            phone.value = '';
+            formMode = mode;
+            getUser(mode, id);
+          } else if (mode === 'delete') {
+            formMode = mode;
+            getUser(mode, id)
+          }
+          formUserModal.show();
+        }
+
+        // GET USER
+        const getUser = async (mode, id) => {
+          try {
+            const response = await fetch(`${defaultUrl}/${id}`, {
+              method: 'GET'
+            });
+            const result = await response.json();
+            document.getElementById('id').value = result._id;
+            document.getElementById('name').value = result.name;
+            document.getElementById('phone').value = result.phone;
+            if (mode === 'delete') {
+              const message = `Are you sure you want to delete "${result.name}"?`;
+              formMessage.innerHTML = message;
+              formMessage.style.display = 'block';
+              usersData.style.display = 'none';
+            }
+
           } catch (error) {
             console.log('Failed to fetch users: ' + error);
           }
+        }
+
+        document.getElementById('search-btn').addEventListener('click', () => {
+          params.search = document.getElementById('search').value.trim();
+          name.value = 'name';
+          phone.value = 'phone';
+          usersFetch();
         });
 
 
-        fetchData();
-      })
+        
 
 
-    </script>
+        // SUBMIT FORM
+        document.addEventListener('DOMContentLoaded', () => {
+          // script akan jalan ketika dom selesai diload
+          document.getElementById('form-Modal').addEventListener('hidden.bs.modal', () => {
+            formMessage.style.display = 'none';
+            formMessage.innerHTML = '';
+            usersData.style.display = 'block';
+            id.value = '';
+            name.value = '';
+            phone.value = '';
+          });
 
-    <%- include('partial/footer.ejs') %>  
+          formUser.addEventListener('submit', async (e) => {
+            console.log(`type id: ${id.value}, type name: ${name.value}, type phone: ${phone.value}`);
+            e.preventDefault();
+            try {
+              if (formMode === 'add') {
+                const response = await fetch(defaultUrl, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ name: name.value, phone: phone.value }),
+                })
+              } else if (formMode === 'edit') {
+                const response = await fetch(`${defaultUrl}/${id.value}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ _id: id.value, name: name.value, phone: phone.value }),
+                })
+              } else if (formMode === 'delete') {
+                const response = await fetch(`${defaultUrl}/${id.value}`, {
+                  method: 'DELETE',
+                })
+              } else if (formMode === 'search') {
+                const response = await fetch(`${defaultUrl}/${id.value}`, {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ _id: id.value, name: name.value, phone: phone.value }),
+                })
+              }
+
+              name.value = '';
+              phone.value = '';
+              formUserModal.hide();
+              fetchData();
+            } catch (error) {
+              console.log('Failed to fetch users: ' + error);
+            }
+          });
+          fetchData();
+        })
+      </script>
+
+      <%- include('partial/footer.ejs') %>

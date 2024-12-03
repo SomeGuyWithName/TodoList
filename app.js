@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const usersRouter = require('./routes/users')(mongoose);
-// const todosRouter = require('./routes/todos')(connDb); 
+const todosRouter = require('./routes/todos')(mongoose); 
 
 const app = express();
 
@@ -39,9 +39,13 @@ app.get('/', (req, res) => {
   res.render('listUsers');
 });
 
+app.get('/todos', (req, res) => {
+  res.render('listTodos');
+});
+
 // API
 app.use('/users', usersRouter);
-// app.use('/todos', todosRouter);
+app.use('/todos', todosRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
