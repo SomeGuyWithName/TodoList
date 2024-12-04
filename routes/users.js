@@ -6,14 +6,16 @@ module.exports = (mongoose) => {
   const ObjectId = mongoose.Types.ObjectId;
   const User = mongoose.model('users', new mongoose.Schema({ name: String, phone: String }, {versionKey: false}));
 
-  router.get('/', async function (req, res) {    
+  router.get('/', async (req, res) => {    
+
     const { page = 1, limit = 5, sortBy = '_id', sortMode = 'desc', query = '' } = req.query;    
     try {
       const offset = (parseInt(page) - 1) * parseInt(limit);
       const filter = query ? { $or : [{ name: { $regex: query, $options: 'i' } }, { phone: { $regex: query, $options: 'i' } } ] } : {};
+
       const total = await User.countDocuments(filter);      
       const pages = Math.ceil(total / parseInt(limit));
-      const rows = await User.find(filter).sort({ [sortBy]: sortMode === 'asc' ? 1 : -1 }).limit(parseInt(limit)).skip(offset);
+      const rows = await User.find(filter).collation({ locale: 'en', strength: 1 }).sort({ [sortBy]: sortMode === 'asc' ? 1 : -1 }).limit(parseInt(limit)).skip(offset);
 
       res.status(200).json({
         data: rows,

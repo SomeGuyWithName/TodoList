@@ -1,50 +1,133 @@
 <%- include('partial/header.ejs') %>
-<div class="card">
-<div class="card-header">
-    <h2 class="text-center">Todos List</h2>
-</div>
-<div class="card-body">
-    <form>
-        <div class="row mb-3">
-            <label for="title" class="col-sm-2 col-form-label">Title</label>
-            <div class="col-sm-10">
-                <input type="title" class="form-control" id="title" name="title"%>">
+    <div class="card">
+        <div class="card-header">
+
+            <h2 class="text-center">Todos List</h2>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="row mb-3">
+                    <label for="title" class="col-sm-2 col-form-label">Title</label>
+                    <div class="col-sm-10">
+                        <input type="title" class="form-control" id="title" name="title" %>">
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-3">
+                    <label for="deadlineStart" class="col-sm-2 col-form-label">Deadline</label>
+                    <div class="col-sm-4">
+                        <input type="datetime-local" class="form-control" name="deadlineStart" id="deadlineStart"
+                            max="2024-12-31">
+                    </div>
+                    <div class="col-sm-1 text-center">
+                        <span> s.d. </span>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="datetime-local" class="form-control" name="deadlineEnd" id="deadlineEnd"
+                            max="2024-12-31">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="complete" class="col-sm-2 col-form-label">complete</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" name="complete" id="complete">
+                            <option disabled selected>-select complete-</option>
+                            <option>Done</option>
+                            <option>Not Yet</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-4 col-lg-3 mb-2 mb-md-0">
+                        <button type="button" id="sortButton" class="btn btn-success w-auto"><i
+                                class="fa-solid fa-sort me-2"></i>Sort by deadline</button>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-9 d-flex justify-content-start">
+                        <button type="button" id="resetButton" class="btn btn-warning me-2 w-auto"><i
+                                class="fa-solid fa-rotate"></i></button>
+                        <button type="button" id="searchButton" class="btn btn-info w-auto"><i
+                                class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                </div>
+        </div>
+        <hr class="m-0">
+        <div class="bg-light">
+            <div class="mx-3">
+                <div class="input-group my-2">
+                    <input type="text" class="form-control" id="addTitle" placeholder="Add Title">
+                    <button type="button" id="addButton" class="btn btn-outline-primary"><i
+                            class="fa-solid fa-circle-down"></i></button>
+                </div>
             </div>
         </div>
-        <div class="form-group row align-items-center mb-3">
-            <label for="deadlineStart" class="col-sm-2 col-form-label">Deadline</label>
-            <div class="col-sm-4">
-                <input type="datetime-local" class="form-control" name="deadlineStart" id="deadlineStart" max="2024-12-31">
-            </div>
-            <div class="col-sm-1 text-center">
-                <span> s.d. </span>
-            </div>
-            <div class="col-sm-4">
-                <input type="datetime-local" class="form-control" name="deadlineEnd" id="deadlineEnd" max="2024-12-31">
-            </div>
+        <div class="row m-0">
+            <ul class="list-group p-0 " id="listTodo">
+            </ul>
         </div>
-        <div class="row mb-3">
-            <label for="complete" class="col-sm-2 col-form-label">complete</label>
-            <div class="col-sm-10">
-                <select class="form-select" name="complete" id="complete">
-                    <option disabled selected>-select complete-</option>
-                    <option>Done</option>
-                    <option>Not Yet</option>
-                </select>
+        <!-- MODAL -->
+        <div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="form-ModalLabel">Todos Form</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="todoForm">
+                        <div id="todos-edit">
+                            <div class="row mb-3">
+                                <label for="title" class="col-sm-2 col-form-label">Title</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="title">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="Deadline" class="col-sm-2 col-form-label">Deadline</label>
+                                <div class="col-sm-10">
+                                    <input type="datetime-local" class="form-control" id="deadline">
+                                </div>
+                            </div>
+                            <div class="row mb-3 col-sm-2 col-form-label">
+                                <label for="complete" class="form-check-label">Complete</label>
+                            </div>
+                            <div class="row mb-3 col-sm-2 col-form-label">
+                                <input type="checkbox" class="form-check-input" id="complete">
+                                <label for="complete" class="form-check-label">Done</label>
+                            </div>
+                        </div>
+                        <div class="delete" class="d-none">
+                            <p>Are you sure want to delete?</p>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-12 col-md-4 col-lg-3 mb-2 mb-md-0">
-              <button type="button" id="sortButton" class="btn btn-success w-auto"><i
-                  class="fa-solid fa-sort me-2"></i>Sort by deadline</button>
-            </div>
-            <div class="col-12 col-md-8 col-lg-9 d-flex justify-content-start">
-              <button type="button" id="resetButton" class="btn btn-warning me-2 w-auto"><i
-                  class="fa-solid fa-rotate"></i></button>
-              <button type="button" id="searchButton" class="btn btn-info w-auto"><i
-                  class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
-          </div>
         </div>
 
-<%- include('partial/footer.ejs') %>
+
+        <script>
+            let params = {
+                page: 1,
+                limit: 10,
+                title: "",
+                complete: "",
+                startDeadline: "",
+                endDateDeadline: "",
+                sortBy: '_id',
+                sortMode: 'desc',
+                executor: "",
+            }
+
+            const modal = new Bootstrap.Modal($('#form-Modal'));
+            const listTodo = $('#listTodo');
+            const addForm = $('#addButton'); 
+
+            $("#form-modal").$('')
+
+
+        </script>
+        <%- include('partial/footer.ejs') %>

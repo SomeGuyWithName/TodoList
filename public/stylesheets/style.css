@@ -18,3 +18,15 @@ a {
 div#showPagination {
   margin-left: auto;
 }
+
+input#deadlineEnd.form-control {
+  width: 510px;
+}
+
+button#resetButton.btn.btn-warning.me-2.w-auto {
+  margin-right: 1000px;
+}
+
+/* button#addButton.btn.btn-outline-primary {
+  margin-left: 1220px;
+} */
