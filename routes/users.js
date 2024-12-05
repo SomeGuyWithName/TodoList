@@ -92,60 +92,10 @@ module.exports = (mongoose) => {
     }
   });
   
-  // router.get('/:id', async (req, res) => {
-  //   try {
-  //     const user = await mongoose.collection('users').findOne({ _id: new ObjectId(req.params.id) });
-  //     console.log('ini data add:', user);
-      
-  //     res.status(200).json(user);
-  //   } catch (error) {
-  //     console.error('Error fetching user:', error);
-  //     res.status(500).json('Internal Server Error');
-  //   }
-  // })
-     
-  // UPDATE 
-  // router.put('/:id', async (req, res) => {
-  //   try {
-  //     const user = await mongoose.collection('users').updateOne({ _id: new ObjectId(req.params.id) }, { $set: name, phone });
-  // } catch (error) {
-  //   console.error('Error updating user:', error);
-  //   res.status(500).json('Internal Server Error');
-  // }
-  // });
-
-  // router.post('/', async function (req, res) {
-  //   try {
-  //     const { name, phone } = req.body;
-  //     // const result = await response.json();
-  //     console.log(`Name: ${name}, Phone: ${phone}`);
-  //     readData();
-  //   } catch (error) {
-  //     console.error('Error creating user:', error);
-  //     res.status(500).json('Internal Server Error');
-  //   }
-  // });
-
-
-  // router.put('/:id', async function (req, res) {
-  //   try {
-  //     await db.collection('users').updateOne({ _id: new ObjectId(req.params.id) }, { $set: req.body });
-  //     res.status(200).json('User updated successfully');
-  //   } catch (error) {
-  //     console.error('Error updating user:', error);
-  //     res.status(500).json('Internal Server Error');
-  //   }
-  // });
-
-  // router.delete('/:id', async function (req, res) {
-  //   try {
-  //     await db.collection('users').deleteOne({ _id: new ObjectId(req.params.id) });
-  //     res.status(200).json('User deleted successfully');
-  //   } catch (error) {
-  //     console.error('Error deleting user:', error);
-  //     res.status(500).json('Internal Server Error');
-  //   }
-  // });
+  router.get('/:id/todos', async (req, res) => {
+    res.render('listTodos', { userId: req.params.id })
+    console.log(`User id:`, req.params.id);
+  })
 
   return router;
 }

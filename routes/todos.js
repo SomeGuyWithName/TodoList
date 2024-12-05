@@ -3,20 +3,21 @@ var router = express.Router();
 
 module.exports = (mongoose) => {
   const ObjectId = mongoose.Types.ObjectId;
-  const User = mongoose.model(
+  const Todo = mongoose.model(
     'todos',
     new mongoose.Schema(
       {
         title: { type: String, required: true },
         complete: { type: Boolean, default: false },
         deadline: { type: Date },
-        executor: { type: ObjectId, ref: 'users' },
+        executor: { type: ObjectId, ref: 'users._id' },
       },
       { versionKey: false }
     )
   );
-
-router.get('/', async function (req, res) {
+  
+// ROUTER TODOS
+router.get('/', async  (req, res) => {
   const {
     page = 1,
     limit = 10,
@@ -41,9 +42,9 @@ router.get('/', async function (req, res) {
     };
 
     const sortOrder = sortMode === 'asc' ? 1 : -1;
-    const total = await User.countDocuments(filter);
+    const total = await Todo.countDocuments(filter);
     const pages = Math.ceil(total / parseInt(limit));
-    const rows = await User.find(filter)
+    const rows = await Todo.find(filter)
       .collation({ locale: 'en', strength: 1 })
       .sort({ [sortBy]: sortOrder })
       .limit(parseInt(limit))
@@ -62,37 +63,53 @@ router.get('/', async function (req, res) {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 
-  router.get('/:id', async function (req, res) {
+  const todosValidation = (req, res, next) => {
+    const { title, complete, deadline, executor } = req.body;
+    if (!title || !complete || !deadline || !executor) {
+      return res.status(400).json({ message: 'Title, complete, deadline and executor are required' });
+    }
+    if (typeof title !== 'string' || typeof complete !== 'boolean' || !deadline || typeof executor !== 'string') {
+      return res.status(400).json({ message: 'Title, complete, deadline and executor must be strings' });
+    }
+    if (title.trim() === '' || complete === '' || deadline.trim() === '' || executor.trim() === '') {
+      return res.status(400).json({ message: 'Title, complete, deadline and executor cannot be empty' });
+    }
+    next();
+  };
+
+  // GET BY ID
+  router.get('/:id',todosValidation, async  (req, res) => {
     const { id } = req.params;
     try {
-      const todo = await User.findById(id);
-      if (!todo) {
+      const result = await Todo.findById({ _id: new ObjectId(id) });
+      if (!result) {
         return res.status(404).json({ message: 'Todo not found' });
       }
-      res.status(200).json(todo);
+      res.status(200).json(result);
     } catch (error) {
       console.error('Error fetching todo:', error);
       res.status(500).json({ message: 'Internal Server Error' });
     }
   });
 
-  router.post('/', async function (req, res) {
-    const { title, complete, deadline, executor } = req.body;
-    const todo = new User({ title, complete, deadline, executor });
+  // POST
+  router.post('/', todosValidation, async  (req, res) => {
     try {
-      await todo.save();
-      res.status(201).json({ message: 'Todo created successfully' });
+      const { title, complete, deadline, executor } = req.body;
+      const result = await Todo.insertOne({ _id: new ObjectId(req.params.id)}, {$set: {title, complete, deadline, executor}});
+      res.status(201).json(result);
     } catch (error) {
       console.error('Error creating todo:', error);
       res.status(500).json({ message: 'Internal Server Error' });
     }
   });
 
-  router.update('/:id', async function (req, res) {
+  // PUT
+  router.put('/:id', todosValidation, async  (req, res) => {
     const { id } = req.params;
     const { title, complete, deadline, executor } = req.body;
     try {
-      const todo = await User.findById(id);
+      const todo = await Todo.findById(id);
       if (!todo) {
         return res.status(404).json({ message: 'Todo not found' });
       }
@@ -108,11 +125,13 @@ router.get('/', async function (req, res) {
     }
   });
 
-  router.delete('/:id', async function (req, res) {
+  // DELETE
+  router.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-      const todo = await User.findByIdAndDelete(id);
-      if (!todo) {
+      const result = await Todo.findOne({ _id: new ObjectId(id) });
+      await Todo.deleteOne({ _id: new ObjectId(id) });
+      if (!result) {
         return res.status(404).json({ message: 'Todo not found' });
       }
       res.status(200).json({ message: 'Todo deleted successfully' });
@@ -121,8 +140,7 @@ router.get('/', async function (req, res) {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   });
-});
-
+})
 
 return router;
 }

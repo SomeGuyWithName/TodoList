@@ -39,9 +39,6 @@ app.get('/', (req, res) => {
   res.render('listUsers');
 });
 
-app.get('/todos', (req, res) => {
-  res.render('listTodos');
-});
 
 // API
 app.use('/users', usersRouter);
