@@ -94,7 +94,6 @@ module.exports = (mongoose) => {
   
   router.get('/:id/todos', async (req, res) => {
     res.render('listTodos', { userId: req.params.id })
-    console.log(`User id:`, req.params.id);
   })
 
   return router;

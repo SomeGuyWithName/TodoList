@@ -1,196 +1,362 @@
 <%- include('partial/header.ejs') %>
-<div class="row mt-3">
-    <div class="col">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between">
-                <a class="btn btn-secondary" href="/" role="button"><i class="fa-solid fa-door-open"></i></a>
-                <h3 class="mb-0 card-title text-center flex-grow-1">Todo List</h3>
-            </div>
-            <div class="card-body">
-                <div class="mb-3 row">
-                    <label for="title" class="col-sm-2 col-form-label">Title</label>
-                    <div class="col-sm-10">
-                        <input type="title" class="form-control" id="title" name="title">
-                    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <a class="btn btn-secondary" href="/" role="button"><i class="fa-solid fa-door-open"></i></a>
+                    <h3 class="mb-0 card-title text-center flex-grow-1">Todo List</h3>
                 </div>
-                <div class="form-group row align-items-center mb-3">
-                    <label for="deadlineStart" class="col-sm-2 col-form-label">Deadline</label>
-                    <div class="col-sm-4">
-                        <input type="datetime-local" class="form-control" name="deadlineStart" id="deadlineStart" max="2024-12-31">
-                    </div>
-                    <div class="col-sm-1 text-center">s.d.</div>
-                    <div class="col-sm-4">
-                        <input type="datetime-local" class="form-control" name="deadlineEnd" id="deadlineEnd" max="2024-12-31">
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <label for="complete" class="col-sm-2 col-form-label">Complete</label>
-                    <div class="col-sm-10">
-                        <select class="form-select" name="complete" id="complete">
-                            <option disabled selected>-select complete-</option>
-                            <option>Done</option>
-                            <option>Not Yet</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-start align-items-center gap-2 mt-3">
-                    <button type="button" id="sortButton" class="btn btn-success">
-                        <i class="fa-solid fa-sort me-2"></i>Sort by deadline
-                    </button>
-                    <button type="button" id="resetButton" class="btn btn-warning">
-                        <i class="fa-solid fa-rotate"></i>
-                    </button>
-                    <button type="button" id="searchButton" class="btn btn-info">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="bg-light px-3 py-2">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="addTitle" placeholder="Add Title">
-                    <button type="button" id="addButton" class="btn btn-outline-primary">
-                        <i class="fa-solid fa-circle-down"></i>
-                    </button>
-                </div>
-            </div>
-            <ul class="list-group p-0" id="listTodo">
-                <!-- DATA TODOSS -->
-            </ul>
-        </div>
-    </div>
-</div>
-
-
-<!-- MODAL -->
-<div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="form-ModalLabel">Todos Form</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="todoForm">
-                <div id="todos-edit">
-                    <div class="row mb-3">
-                        <label for="title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="title">
-                    </div>
-                    <div class="mb-3">
-                        <label for="Deadline" class="form-label">Deadline</label>
-                        <input type="datetime-local" class="form-control" id="deadline">
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="complete">
-                        <label for="complete" class="form-check-label">Done</label>
-                    </div>
-                </div>
-                <div id="todos-delete" class="delete d-none">
-                    <p>Are you sure you want to delete?</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script>
-    let params = {
-        query: '',
-        page: 1,
-        limit: 10,
-        title: "",
-        complete: "",
-        startDeadline: "",
-        endDateDeadline: "",
-        sortBy: '_id',
-        sortMode: 'desc',
-        executor: "",
-    }
-
-    // Declaration VAR
-    const modal = new Bootstrap.Modal($('#form-Modal'));
-    const listTodo = $('#listTodo');
-    const addForm = $('#addButton');
-    const todoData = $('#todoFetch');
-
-    const todoFetch = async () => {
-    $.ajax({
-        method: "GET", 
-        url: "/todos",
-        data: params,
-    }).done(function (data) {
-        let html = '';
-        data.forEach((todo, index) => { 
-            html += `
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="alert alert-light ${todo.complete ? 'alert-success' : 'alert-danger'}" role="alert">
-                        <span class="flex-grow-1">${todo.title}</span>
-                        <div class="d-flex gap-2">
-                            <!-- Add buttons or actions here if needed -->
+                <div class="card-body">
+                    <div class="mb-3 row">
+                        <label for="title" class="col-sm-2 col-form-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="title" class="form-control" id="title" name="title">
                         </div>
                     </div>
-                </li>
-            `;
+                    <div class="form-group row align-items-center mb-3">
+                        <label for="deadlineStart" class="col-sm-2 col-form-label">Deadline</label>
+                        <div class="col-sm-4">
+                            <input type="datetime-local" class="form-control" name="deadlineStart" id="deadlineStart"
+                                max="2024-12-31">
+                        </div>
+                        <div class="col-sm-1 text-center">s.d.</div>
+                        <div class="col-sm-4">
+                            <input type="datetime-local" class="form-control" name="deadlineEnd" id="deadlineEnd"
+                                max="2024-12-31">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="complete" class="col-sm-2 col-form-label">Complete</label>
+                        <div class="col-sm-10">
+                            <select class="form-select" name="complete" id="complete">
+                                <option disabled selected>-select complete-</option>
+                                <option>Done</option>
+                                <option>Not Yet</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center gap-2 mt-3">
+                        <button type="button" id="sortButton" class="btn btn-success">
+                            <i class="fa-solid fa-sort me-2"></i>Sort by deadline
+                        </button>
+                        <button type="button" id="resetButton" class="btn btn-warning">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                        <button type="button" id="searchButton" class="btn btn-info">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </div>
+                <hr class="m-0">
+                <div class="bg-light px-3 py-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="addTitle" placeholder="Add Title">
+                        <button type="button" id="addButton" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-circle-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <ul class="list-group p-0" id="listTodo">
+                    <!-- DATA TODOSS -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL -->
+    <div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="form-ModalLabel">Todos Form</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="todoForm">
+                    <div id="todos-edit">
+                        <div class="row mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="Deadline" class="form-label">Deadline</label>
+                            <input type="datetime-local" class="form-control" id="deadline">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="complete">
+                            <label for="complete" class="form-check-label">Done</label>
+                        </div>
+                    </div>
+                    <div id="todos-delete" class="delete d-none">
+                        <p>Are you sure you want to delete?<span id="deleteTodo"></span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let params = {
+            page: 1,
+            limit: 10,
+            title: "",
+            complete: "",
+            startDeadline: "",
+            endDateDeadline: "",
+            sortBy: '_id',
+            sortMode: 'desc',
+            executor: "<%= userId %>",
+        }
+
+        const listTodo = $('#listTodo');
+        const addTitle = $('#addTitle');
+        const addButton = $('#addButton');
+
+        let endpointApi = `/todos/`
+
+        const fetchTodos = async () => {
+            endpointApi += `?executor=${params.executor}&page=${params.page}&limit=${params.limit}&title=${params.title}&sortBy=${params.sortBy}&sortMode=${params.sortMode}`;
+            if (params.title) endpointApi += `&title=${params.title}`;
+            if (params.complete) endpointApi += `&complete=${params.complete}`;
+            if (params.startDeadline) endpointApi += `&startDeadline=${new Date(params.startDeadline).toISOString()}`;
+            if (params.endDateDeadline) endpointApi += `&endDateDeadline=${new Date(params.endDateDeadline).toISOString()}`;
+
+            return $.ajax({
+                url: endpointApi,
+                method: "GET",
+                dataType: "json",
+            })
+        }
+
+        const addTodo = async (title, executor) => {
+            $.ajax({
+                url: endpointApi,
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ title, executor }),
+                success: (data) => {
+                    console.log(data);
+                },
+                error: (error) => {
+                    console.log(`Failed to add todo: ${error}`);
+                }
+            })
+        };
+
+        $(document).ready(() => {
+            addButton.on('click', () => {
+                const title = addTitle.val().trim();
+                const executor = params.executor;
+                if (title) {
+                    console.log(`Added title: ${title}, executor: ${executor}`);
+                    addTodo(title, executor);
+                    addTitle.val('');
+                }
+            })
         });
-        $('#listTodo').html(html); // Correctly updates the list
-    }).fail(function (error) {
-        console.error("Error fetching todos:", error); // Handle errors gracefully
-    });
-};
+
+    </script>
 
 
+    <!-- <script>
+        let params = {
+            query: '',
+            page: 1,
+            limit: 10,
+            title: "",
+            complete: "",
+            startDeadline: "",
+            endDateDeadline: "",
+            sortBy: '_id',
+            sortMode: 'desc',
+            executor: "<%= userId %>",
+        }
 
-    const todoSave = async () => {
-        $.ajax({
-            method: POST,
-            url: "/todos",
-            data: { title, deadline, complete }
-        }).done(function (data) {
-            $('#title').val('');
+        let load = false;
+        let muchData = false;
+
+        // Declaration VAR
+        const modal = new bootstrap.Modal($('#form-Modal'));
+        const listTodo = $('#listTodo');
+        const addTitle = $('#addTitle');
+        const addButton = $('#addButton');
+        const todoData = $('#todoFetch');
+        const searchBtn = $('#searchButton');
+        const resetBtn = $('#resetButton');
+        const sortBtn = $('#sortButton');
+        const deleteMssg = $('#todos-delete');
+        const deleteTodo = $('#deleteTodo');
+        const editForm = $('#todos-edit');
+
+        const urlTodo = async () => {
+            let url = `/todos?executor=${params.executor}&page=${params.page}&limit=${params.limit}&title=${params.title}&sortBy=${params.sortBy}&sortMode=${params.sortMode}`;
+            if (params.title) url += `&title=${params.title}`;
+            if (params.complete) url += `&complete=${params.complete}`;
+            if (params.startDeadline) url += `&startDeadline=${new Date(params.startDeadline).toISOString()}`;
+            if (params.endDateDeadline) url += `&endDateDeadline=${new Date(params.endDateDeadline).toISOString()}`;
+
+            return $.ajax({
+                url: urlTodo,
+                method: "GET",
+                dataType: "json",
+            })
+        };
+
+        const todoFetch = (isAppend = false) => {
+            if (!isAppend) listTodo.empty(); {
+                const placeholder = `
+                <li class="list-group-item d-flex justify-content-between align-items-center placeholder-glow">
+                </li>
+                `
+                listTodo.append(placeholder);
+                urlTodo().done((data) => {
+                    if (data.data.length > 0) {
+                        muchData = false;
+                        listTodo.find('.placeholder-glow').remove();
+                        return;
+                    }
+
+                    listTodo.find('.placeholder-glow').remove();
+
+                    data.data.forEach(result => {
+                        const now = moment();
+                        const date = moment(result.deadline);
+                        const formatDate = date.format('DD-MM-YYYY HH:mm');
+                        const formatDateYear = date.format('YYYY-MM-DD HH-mm');
+                        const passedDate = date.isBefore(now) && !result.complete;
+
+                        if (listTodo.find(`li[data-id="${result._id}"]`).length === 0) {
+                            const todoTable = `
+                    <li class="list-group-item d-flex justify-content-between align-items-center" position-relative ${result.complete ? 'bg-success-subtle text-success' : passedDate ? "bg-danger-subtle text-danger" : "bg-secondary-subtle text-secondary"
+                                }" data-id="${result._id}">
+                    <p class="mb-md-0">${formatDate} ${result.title}</p>
+                    <div class="d-flex gap-2">
+                    <button class="btn btn-sm me-2 ${result.complete ? 'text-success-emphasis' : passedDate ? "text-danger" : "text-secondary"
+                                }" data-bs-toggle="modal" data-bs-target="#form-Modal" data-bs-id="${result._id}" data-bs-title="${result.title}" data-bs-deadline="${result.deadline}" data-bs-complete="${result.complete
+                                }" data-action="edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="btn btn-sm ${result.complete ? 'text-success-emphasis' : passedDate ? "text-danger" : "text-secondary"
+                                }"data-bs-toggle="modal" data-bs-target="#form-Modal" data-bs-id="${result._id}" data-bs-title="${result.title}" data-bs-action="delete"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    </li>
+                    `;
+                            listTodo.append(todoTable);
+                        }
+                    });
+                    load = false;
+                }).fail(() => {
+                    load = false;
+                    listTodo.find('.placeholder-glow').remove();
+                })
+            };
+
+            const formTodo = (title, executor) => {
+                $.ajax({
+                    method: "POST",
+                    url: "/todos",
+                    contentType: "application/json",
+                    data: JSON.stringify({ title, executor }),
+
+                    success: () => {
+                        todoFetch();
+                    },
+                    error: () => {
+                        console.error("Error add todo:", error);
+                    }
+                })
+            };
+            $(document).ready(function () {
+                addButton.on('click', () => {
+                    const title = addTitle.val().trim();
+                    console.log(`add :`, title);
+                    
+                })
+                // addForm.on('click', (event) => {
+                //     event.preventDefault();
+                //     console.log(`click add todo`);
+                    
+                //     const title = $('#addTitle').val().trim();
+                //     console.log(`add :`, title);
+
+                //     const executor = params.executor;
+                //     if (title) {
+                //         formTodo(title, executor);
+                //         $('#addTitle').val('');
+                //     } else {
+                //         console.log('error add todo', error.message);
+                //     }
+                // });
+                searchBtn.on('click', () => {
+                    params.title = $('#search').val() || '';
+                    params.startDeadline = $('#deadlineStart').val() || '';
+                    params.endDateDeadline = $('#deadlineEnd').val() || '';
+                    params.complete = $('#complete').val() || '';
+                    params.page = 1;
+                    muchData = true
+
+                    if (!params.title) delete params.title;
+                    if (!params.startDeadline) delete params.startDeadline;
+                    if (!params.endDateDeadline) delete params.endDateDeadline;
+                    if (!params.complete) delete params.complete;
+                    todoFetch();
+                });
+                resetBtn.on('click', () => {
+                    params = {
+                        query: '',
+                        page: 1,
+                        limit: 10,
+                        title: "",
+                        complete: "",
+                        startDeadline: "",
+                        endDateDeadline: "",
+                        sortBy: '_id',
+                        sortMode: 'desc',
+                        executor: "<%= userId %>",
+                    }
+                    if (params.sortBy !== '_id') {
+                        params.sortBy = '_id';
+                        params.sortMode = 'desc';
+                        sortBtn.html('Sort <i class="fa-solid fa-sort"></i>');
+                    }
+                    todoFetch();
+                });
+                sortBtn.on('click', () => {
+                    params.sortMode = params.sortMode === 'desc' ? 'asc' : 'desc';
+                    params.sortBy = '_id';
+                    params.page = 1;
+                    muchData = true;
+                    if (params.sortMode === 'asc') {
+                        sortBtn.html('<i class="fa-solid fa-sort-asc"></i>Sort By Deadline');
+                    } else {
+                        sortBtn.html(`<i class="fa-solid fa-sort-desc"></i>Sort By Deadline`);
+                    }
+                    todoFetch();
+                });
+                $("#form-modal").on('show.bs.modal', (event) => {
+                    const button = $(event.relatedTarget);
+                    const action = button.data('action');
+                    const id = button.data('id');
+                    const title = button.data('title');
+                    const modal = $(this);
+                    const deadline = button.data('deadline');
+                    const complete = button.data('complete');
+
+                    if (action === 'delete') {
+                        $('#todos-delete').addClass('d-none');
+                        $('#todos-edit').removeClass('d-none');
+                        $('todoForm').val(id);
+                    }
+                });
+                modalClick.on('click', (event) => {
+                    event.preventDefault();
+                    const id = $(event.target).data('id');
+                });
+            });
             todoFetch();
-        })
-    };
-
-    const urlTodo = async () => {
-        let url = '/todos?executor=';
-    }
-
-    $(document).ready(function () {
-        todoFetch();
-
-        $('#addButton').submit((event) => {
-            event.preventDefault();
-            const title = $('#addTitle').val();
-            const deadline = $('#deadline').val();
-            const complete = $('#complete').val();
-            todoSave();
-        })
-    })
-
-    $("#form-modal").on('show.bs.modal', function (event) {
-        const button = $(event.relatedTarget);
-        const id = button.data('id');
-        const modal = $(this);
-        modal.find('.modal-title').text('Update Todo');
-        modal.find('#todoForm').val(id);
-        modal.find('#title').val(button.data('title'));
-        modal.find('#deadline').val(button.data('deadline'));
-        modal.find('#complete').val(button.data('complete'));
-    });
-
-    $('#search-btn').on('#change', () => {
-        params.query = $('#search').value;
-        // limitSelect.value = '5';
-        fetchData();
-    })
-
-
-
-</script>
-<%- include('partial/footer.ejs') %>
+        }
+    </script> -->
+    <%- include('partial/footer.ejs') %>

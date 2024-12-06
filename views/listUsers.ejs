@@ -173,11 +173,6 @@
       const renderPagination = () => {
         const totalPages = Math.ceil(params.total / params.limit);
         pagination.innerHTML = '';
-        console.log(`Current Page: ${currentPage}, Total Entries: ${params.total}, Limit: ${params.limit}, Total Pages: ${totalPages}`);
-        console.log(``);
-
-        console.log(Math.min((currentPage - 1) * params.limit + 1, params.total));
-
         showPagination.innerHTML = `Showing ${Math.min((currentPage - 1) * params.limit + 1, params.total)} to ${Math.min(currentPage * params.limit, params.total)} of ${params.total} entries`;
 
         if (totalPages > 1) {
@@ -212,17 +207,6 @@
             });
             pagination.appendChild(pageData);
           }
-
-          // const lastPageButton = document.createElement('li');
-          // lastPageButton.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-          // lastPageButton.innerHTML = `<a class="page-link" href="#">${totalPages}</a>`;
-          // lastPageButton.addEventListener('click', (event) => {
-          //   event.preventDefault();
-          //   currentPage = totalPages;
-          //   params.page = totalPages;
-          //   fetchData();
-          // });
-          // pagination.appendChild(lastPageButton);
 
           const nextButton = document.createElement('li');
           nextButton.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
@@ -300,10 +284,16 @@
             formMessage.style.display = 'block';
             usersData.style.display = 'none';
           }
+
         } catch (error) {
           console.log('Failed to fetch users: ' + error);
         }
       }
+
+      const todo = (userId) => {
+        window.location.href = `${defaultUrl}/${userId}/todos`;
+      }
+
 
       // SUBMIT FORM
       document.addEventListener('DOMContentLoaded', () => {
@@ -385,7 +375,6 @@
 
         document.getElementById('search-btn').addEventListener('click', () => {
           params.query = document.getElementById('search').value;
-          // limitSelect.value = '5';
           fetchData();
         })
         
@@ -404,6 +393,14 @@
           document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort me-2"></i> Name`;
           document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort me-2"></i> Phone`;
           fetchData();
+        })
+
+        document.getElementById('click', (event) => {
+          if (event.target.closest('.todos-btn')) {
+            event.preventDefault()
+            const userId = event.target.closest('.todos-btn').getAttribute('data-user-id');
+            todo(userId)
+          }
         })
 
         fetchData()
