@@ -1,5 +1,4 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -27,6 +26,7 @@ button.btn.btn-warning.todos-btn {
   padding: 4px 8px;
 
 }
+
 
 /* button#addButton.btn.btn-outline-primary {
   margin-left: 1220px;

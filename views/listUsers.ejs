@@ -1,68 +1,66 @@
 <%- include('partial/header.ejs') %>
-
-  <body>
-    <div class="container">
-      <div class="card mt-5">
-        <div class="card-header text-center">
-          <h2>MongoDB BREADS(Browse, Read, Edit, Add, Delete, Sorting)</h2>
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-2 mb-3 mb-md-0">
-              <div class="input-group">
-                <span for="limit" class="input-group-text">Show</span>
-                <select class="form-control text-center" id="limit" name="limit">
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="all">all</option>
-                </select>
-                <span class="input-group-text">entries</span>
-              </div>
+  <div class="container">
+    <div class="card mt-5">
+      <div class="card-header text-center">
+        <h2>MongoDB BREADS(Browse, Read, Edit, Add, Delete, Sorting)</h2>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-2 mb-3 mb-md-0">
+            <div class="input-group">
+              <span for="limit" class="input-group-text">Show</span>
+              <select class="form-control text-center" id="limit" name="limit">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="all">all</option>
+              </select>
+              <span class="input-group-text">entries</span>
             </div>
-            <div class="col-md-9 mb-3">
-              <div class="input-group">
-                <input type="text" class="form-control" id="search" name="search" placeholder="Search">
-                <button type="button" class="btn btn-outline-dark" id="search-btn"><i
-                    class="fa-solid fa-magnifying-glass"></i></button>
-                <button type="button" class="btn btn-outline-warning" id="reset-btn"><i
-                    class="fa-solid fa-arrows-rotate"></i></button>
-              </div>
+          </div>
+          <div class="col-md-9 mb-3">
+            <div class="input-group">
+              <input type="text" class="form-control" id="search" name="search" placeholder="Search">
+              <button type="button" class="btn btn-outline-dark" id="search-btn"><i
+                  class="fa-solid fa-magnifying-glass"></i></button>
+              <button type="button" class="btn btn-outline-warning" id="reset-btn"><i
+                  class="fa-solid fa-arrows-rotate"></i></button>
             </div>
           </div>
         </div>
-        <div class="table-data">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col" class="col-md-1 align-middle px-2">
-                  <span>No.</span>
-                </th>
-                <th scope="col" class="col-md-3 align-middle px-2" id="s-name">
-                  <span><i class="fa-solid fa-sort me-2"></i>Name</span>
-                </th>
-                <th scope="col" class="col-md-3 align-middle px-2" id="s-phone">
-                  <span><i class="fa-solid fa-sort me-2"></i>Phone</span>
-                </th>
-                <th scope="col" class="col-md-2 align-middle px-2">
-                  <span>Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody id="users-table">
-            </tbody>
-          </table>
-        </div>
-        <div class="card-footer d-flex flex-column flex-md-row justify-content-between align-items-center">
-          <button type="button" class="btn btn-primary" onclick="showModal('add')"><i
-              class="fa-solid fa-plus"></i></button>
-          <div class="me-3 mb-2 mb-md-0 text-center text-md-start" id="showPagination"></div>
-          <nav aria-label="Page navigation">
-            <ul class="pagination m-0 float-end" id="pagination">
-            </ul>
-          </nav>
-        </div>
+      </div>
+      <div class="table-data">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" class="col-md-1 align-middle px-2">
+                <span>No.</span>
+              </th>
+              <th scope="col" class="col-md-3 align-middle px-2" id="s-name">
+                <span><i class="fa-solid fa-sort me-2"></i>Name</span>
+              </th>
+              <th scope="col" class="col-md-3 align-middle px-2" id="s-phone">
+                <span><i class="fa-solid fa-sort me-2"></i>Phone</span>
+              </th>
+              <th scope="col" class="col-md-2 align-middle px-2">
+                <span>Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="users-table">
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <button type="button" class="btn btn-primary" onclick="showModal('add')"><i
+            class="fa-solid fa-plus"></i></button>
+        <div class="me-3 mb-2 mb-md-0 text-center text-md-start" id="showPagination"></div>
+        <nav aria-label="Page navigation">
+          <ul class="pagination m-0 float-end" id="pagination">
+          </ul>
+        </nav>
       </div>
     </div>
+
 
     <div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -99,50 +97,51 @@
         </div>
       </div>
     </div>
-    <script>
+  </div>
+  <script>
 
-      let params = {
-        query: '',
-        sortBy: '_id',
-        sortMode: 'desc',
-        limit: 5,
-        userId: '',
-        search: '' 
-      }
+    let params = {
+      query: '',
+      sortBy: '_id',
+      sortMode: 'desc',
+      limit: 5,
+      userId: '',
+      search: ''
+    }
 
-      let currentPage = 1;
-      const formUserModal = new bootstrap.Modal(document.getElementById('form-Modal'));
-      const formUser = document.getElementById('users-form');
-      const formMessage = document.getElementById('modal-message');
-      const usersData = document.getElementById('users-data');
-      const pagination = document.getElementById('pagination');
-      const showPagination = document.getElementById('showPagination');
-      const limitSelect = document.getElementById('limit');
-      const resetButton = document.getElementById('reset-btn');
-      const searchButton = document.getElementById('search-btn');
-      const searchInput = document.getElementById('search');
+    let currentPage = 1;
+    const formUserModal = new bootstrap.Modal(document.getElementById('form-Modal'));
+    const formUser = document.getElementById('users-form');
+    const formMessage = document.getElementById('modal-message');
+    const usersData = document.getElementById('users-data');
+    const pagination = document.getElementById('pagination');
+    const showPagination = document.getElementById('showPagination');
+    const limitSelect = document.getElementById('limit');
+    const resetButton = document.getElementById('reset-btn');
+    const searchButton = document.getElementById('search-btn');
+    const searchInput = document.getElementById('search');
 
-      formMessage.style.display = 'none';
-      let id = document.getElementById('id');
-      let name = document.getElementById('name');
-      let phone = document.getElementById('phone');
-      let formMode = '';
-      let defaultUrl = '/users';
+    formMessage.style.display = 'none';
+    let id = document.getElementById('id');
+    let name = document.getElementById('name');
+    let phone = document.getElementById('phone');
+    let formMode = '';
+    let defaultUrl = '/users';
 
-      // SHOW DATA
-      const fetchData = async () => {
-        try {
-          const offset = (currentPage - 1) * params.limit;
-          const query = new URLSearchParams(params).toString();
-          const response = await fetch(`${defaultUrl}?${query}`, {
-            method: 'GET'
-          })
-          const result = await response.json();
-          if (result && result.data) {
-            params.total = result.total;
-            let html = '';
-            result.data.forEach((item, index) => {
-              html += `
+    // SHOW DATA
+    const fetchData = async () => {
+      try {
+        const offset = (currentPage - 1) * params.limit;
+        const query = new URLSearchParams(params).toString();
+        const response = await fetch(`${defaultUrl}?${query}`, {
+          method: 'GET'
+        })
+        const result = await response.json();
+        if (result && result.data) {
+          params.total = result.total;
+          let html = '';
+          result.data.forEach((item, index) => {
+            html += `
             <tr>
               <td>${offset + index + 1}</td>
               <td>${item.name}</td>
@@ -156,255 +155,256 @@
                 </button>
               </td>
             </tr>`;
-            });
-            document.getElementById('users-table').innerHTML = html;
-          }
-        } catch (error) {
-          console.log('Failed to fetch users: ' + error);
-        };
-        if (params.limit !== 0) {
-          renderPagination();
-        } else {
-          pagination.innerHTML = '';
-          showPagination.innerHTML = `Showing all ${params.total} entries`;
-        }
-      }
-
-      const renderPagination = () => {
-        const totalPages = Math.ceil(params.total / params.limit);
-        pagination.innerHTML = '';
-        showPagination.innerHTML = `Showing ${Math.min((currentPage - 1) * params.limit + 1, params.total)} to ${Math.min(currentPage * params.limit, params.total)} of ${params.total} entries`;
-
-        if (totalPages > 1) {
-          const prevButton = document.createElement('li');
-          prevButton.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-          prevButton.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
-          prevButton.addEventListener('click', () => {
-            if (currentPage > 1) {
-              currentPage--;
-              params.page = currentPage;
-              fetchData();
-            }
-          })
-          pagination.appendChild(prevButton);
-
-          if (currentPage > 10) {
-            const prevButton = document.createElement('li');
-            prevButton.className = 'page-item disabled';
-            prevButton.innerHTML = `<a class="page-link">...<`;
-            pagination.appendChild(prevButton);
-          }
-
-          for (let i = 1; i <= totalPages; i++) {
-            const pageData = document.createElement('li');
-            pageData.className = `page-item ${i === currentPage ? 'active' : ''}`;
-            pageData.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-            pageData.addEventListener('click', (event) => {
-              event.preventDefault();
-              currentPage = i;
-              params.page = i;
-              fetchData();
-            });
-            pagination.appendChild(pageData);
-          }
-
-          const nextButton = document.createElement('li');
-          nextButton.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-          nextButton.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
-          nextButton.addEventListener('click', () => {
-            if (currentPage < totalPages) {
-              currentPage++;
-              params.page = currentPage;
-              fetchData();
-            }
           });
-          pagination.appendChild(nextButton);
+          document.getElementById('users-table').innerHTML = html;
         }
-      }
-
-      // FETCH DATA
-      const usersFetch = async () => {
-        try {
-          const query = `/users?page=${currentPage}&limit=${params.limit}&search=${params.search}&sortBy=${params.sortBy}&sortMode=${params.sortMode}&query=${params.query || ''}`
-          const response = await fetch(query)
-          const result = await response.json();
-
-          if (result.data && Array.isArray(result.data)) {
-            params.users = result.data; // Update the params.users array if needed
-            fetchData(); // Refresh the table
-          } else {
-            console.log('Failed to read URL users: ', result.message);
-          }
-        } catch (error) {
-          console.log('Error fetching users:', error);
-        }
+      } catch (error) {
+        console.log('Failed to fetch users: ' + error);
       };
-
-      // SHOW MODAL
-      const showModal = (mode, id = '', name = '', phone = '') => {
-        params.userId = id;
-        if (mode === 'add') {
-          formMessage.innerHTML = '';
-          formMessage.style.display = 'none';
-          usersData.style.display = 'block';
-          formMode = mode;
-          document.getElementById('id').value = '';
-          document.getElementById('name').value = '';
-          document.getElementById('phone').value = '';
-          name.value = '';
-          phone.value = '';
-        } else if (mode === 'edit') {
-          formMessage.innerHTML = '';
-          formMessage.style.display = 'none';
-          usersData.style.display = 'block';
-          name.value = '';
-          phone.value = '';
-          formMode = mode;
-          getUser(mode, id);
-        } else if (mode === 'delete') {
-          formMode = mode;
-          getUser(mode, id)
-        }
-        formUserModal.show();
+      if (params.limit !== 0) {
+        renderPagination();
+      } else {
+        pagination.innerHTML = '';
+        showPagination.innerHTML = `Showing all ${params.total} entries`;
       }
+    }
 
-      // GET USER
-      const getUser = async (mode, id) => {
-        try {
-          const response = await fetch(`${defaultUrl}/${id}`, {
-            method: 'GET'
-          });
-          const result = await response.json();
-          document.getElementById('id').value = result._id;
-          document.getElementById('name').value = result.name;
-          document.getElementById('phone').value = result.phone;
-          if (mode === 'delete') {
-            const message = `Are you sure you want to delete "${result.name}"?`;
-            formMessage.innerHTML = message;
-            formMessage.style.display = 'block';
-            usersData.style.display = 'none';
+    const renderPagination = () => {
+      const totalPages = Math.ceil(params.total / params.limit);
+      pagination.innerHTML = '';
+      showPagination.innerHTML = `Showing ${Math.min((currentPage - 1) * params.limit + 1, params.total)} to ${Math.min(currentPage * params.limit, params.total)} of ${params.total} entries`;
+
+      if (totalPages > 1) {
+        const prevButton = document.createElement('li');
+        prevButton.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        prevButton.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+        prevButton.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage--;
+            params.page = currentPage;
+            fetchData();
           }
+        })
+        pagination.appendChild(prevButton);
 
+        if (currentPage > 10) {
+          const prevButton = document.createElement('li');
+          prevButton.className = 'page-item disabled';
+          prevButton.innerHTML = `<a class="page-link">...<`;
+          pagination.appendChild(prevButton);
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+          const pageData = document.createElement('li');
+          pageData.className = `page-item ${i === currentPage ? 'active' : ''}`;
+          pageData.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+          pageData.addEventListener('click', (event) => {
+            event.preventDefault();
+            currentPage = i;
+            params.page = i;
+            fetchData();
+          });
+          pagination.appendChild(pageData);
+        }
+
+        const nextButton = document.createElement('li');
+        nextButton.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextButton.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+        nextButton.addEventListener('click', () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            params.page = currentPage;
+            fetchData();
+          }
+        });
+        pagination.appendChild(nextButton);
+      }
+    }
+
+    // FETCH DATA
+    const usersFetch = async () => {
+      try {
+        const query = `/users?page=${currentPage}&limit=${params.limit}&search=${params.search}&sortBy=${params.sortBy}&sortMode=${params.sortMode}&query=${params.query || ''}`
+        const response = await fetch(query)
+        const result = await response.json();
+
+        if (result.data && Array.isArray(result.data)) {
+          params.users = result.data; // Update the params.users array if needed
+          fetchData(); // Refresh the table
+        } else {
+          console.log('Failed to read URL users: ', result.message);
+        }
+      } catch (error) {
+        console.log('Error fetching users:', error);
+      }
+    };
+
+    // SHOW MODAL
+    const showModal = (mode, id = '', name = '', phone = '') => {
+      params.userId = id;
+      if (mode === 'add') {
+        formMessage.innerHTML = '';
+        formMessage.style.display = 'none';
+        usersData.style.display = 'block';
+        formMode = mode;
+        document.getElementById('id').value = '';
+        document.getElementById('name').value = '';
+        document.getElementById('phone').value = '';
+        name.value = '';
+        phone.value = '';
+      } else if (mode === 'edit') {
+        formMessage.innerHTML = '';
+        formMessage.style.display = 'none';
+        usersData.style.display = 'block';
+        name.value = '';
+        phone.value = '';
+        formMode = mode;
+        getUser(mode, id);
+      } else if (mode === 'delete') {
+        formMode = mode;
+        getUser(mode, id)
+      }
+      formUserModal.show();
+    }
+
+    // GET USER
+    const getUser = async (mode, id) => {
+      try {
+        const response = await fetch(`${defaultUrl}/${id}`, {
+          method: 'GET'
+        });
+        const result = await response.json();
+        document.getElementById('id').value = result._id;
+        document.getElementById('name').value = result.name;
+        document.getElementById('phone').value = result.phone;
+        if (mode === 'delete') {
+          const message = `Are you sure you want to delete "${result.name}"?`;
+          formMessage.innerHTML = message;
+          formMessage.style.display = 'block';
+          usersData.style.display = 'none';
+        }
+
+      } catch (error) {
+        console.log('Failed to fetch users: ' + error);
+      }
+    }
+
+    // TODOS TO USER
+    const todo = (userId) => {
+      window.location.href = `${defaultUrl}/${userId}/todos`;
+    }
+
+
+    // SUBMIT FORM
+    document.addEventListener('DOMContentLoaded', () => {
+      // script akan jalan ketika dom selesai diload
+      document.getElementById('form-Modal').addEventListener('hidden.bs.modal', () => {
+        formMessage.style.display = 'none';
+        formMessage.innerHTML = '';
+        usersData.style.display = 'block';
+        id.value = '';
+        name.value = '';
+        phone.value = '';
+      });
+
+      formUser.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log(`type id: ${id.value}, type name: ${name.value}, type phone: ${phone.value}`);
+        try {
+          let response
+          if (formMode === 'add') {
+            response = await fetch(defaultUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ name: name.value, phone: phone.value }),
+            })
+          } else if (formMode === 'edit') {
+            response = await fetch(`${defaultUrl}/${id.value}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ _id: id.value, name: name.value, phone: phone.value }),
+            })
+          } else if (formMode === 'delete') {
+            response = await fetch(`${defaultUrl}/${id.value}`, {
+              method: 'DELETE',
+            })
+          }
+          name.value = '';
+          phone.value = '';
+          formUserModal.hide();
+          fetchData();
         } catch (error) {
           console.log('Failed to fetch users: ' + error);
         }
-      }
-
-      const todo = (userId) => {
-        window.location.href = `${defaultUrl}/${userId}/todos`;
-      }
-
-
-      // SUBMIT FORM
-      document.addEventListener('DOMContentLoaded', () => {
-        // script akan jalan ketika dom selesai diload
-        document.getElementById('form-Modal').addEventListener('hidden.bs.modal', () => {
-          formMessage.style.display = 'none';
-          formMessage.innerHTML = '';
-          usersData.style.display = 'block';
-          id.value = '';
-          name.value = '';
-          phone.value = '';
-        });
-
-        formUser.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          console.log(`type id: ${id.value}, type name: ${name.value}, type phone: ${phone.value}`);
-          try {
-            let response
-            if (formMode === 'add') {
-              response = await fetch(defaultUrl, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name: name.value, phone: phone.value }),
-              })
-            } else if (formMode === 'edit') {
-              response = await fetch(`${defaultUrl}/${id.value}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ _id: id.value, name: name.value, phone: phone.value }),
-              })
-            } else if (formMode === 'delete') {
-              response = await fetch(`${defaultUrl}/${id.value}`, {
-                method: 'DELETE',
-              })
-            }
-            name.value = '';
-            phone.value = '';
-            formUserModal.hide();
-            fetchData();
-          } catch (error) {
-            console.log('Failed to fetch users: ' + error);
-          }
-        });
-        document.getElementById('s-name').addEventListener('click', () => {
-          params.sortBy = 'name';
-          params.sortMode = params.sortMode === 'asc' ? 'desc' : 'asc';
-          if (params.sortMode === 'asc') {
-            document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort-up"></i> Name`;
-          } else {
-            document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort-down"></i> Name`;
-          }
-          fetchData();
-        });
-
-        document.getElementById('s-phone').addEventListener('click', () => {
-          params.sortBy = 'phone';
-          params.sortMode = params.sortMode === 'asc' ? 'desc' : 'asc';
-          if (params.sortMode === 'asc') {
-            document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort-up"></i> Phone`;
-          } else {
-            document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort-down"></i> Phone`;
-          }
-          fetchData();
-        });
-
-        limitSelect.addEventListener('change', (event) => {
-          if (event.target.value == 'all') {
-            params.limit = 0
-            currentPage = 1;
-          } else {
-            params.limit = parseInt(event.target.value);
-          }
-          fetchData()
-        })
-
-        document.getElementById('search-btn').addEventListener('click', () => {
-          params.query = document.getElementById('search').value;
-          fetchData();
-        })
-        
-
-        document.getElementById('reset-btn').addEventListener('click', () => {
-          params = {
-            page: 1,
-            limit: 5,
-            sortBy: '_id',
-            sortMode: 'desc',
-            query: ''
-          };
-          currentPage = 1;
-          searchInput.value = '';
-          limitSelect.value = '5';
-          document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort me-2"></i> Name`;
-          document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort me-2"></i> Phone`;
-          fetchData();
-        })
-
-        document.getElementById('click', (event) => {
-          if (event.target.closest('.todos-btn')) {
-            event.preventDefault()
-            const userId = event.target.closest('.todos-btn').getAttribute('data-user-id');
-            todo(userId)
-          }
-        })
-
-        fetchData()
       });
-    </script>
 
-    <%- include('partial/footer.ejs') %>
+      document.getElementById('s-name').addEventListener('click', () => {
+        params.sortBy = 'name';
+        params.sortMode = params.sortMode === 'asc' ? 'desc' : 'asc';
+        if (params.sortMode === 'asc') {
+          document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort-up"></i> Name`;
+        } else {
+          document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort-down"></i> Name`;
+        }
+        fetchData();
+      });
+
+      document.getElementById('s-phone').addEventListener('click', () => {
+        params.sortBy = 'phone';
+        params.sortMode = params.sortMode === 'asc' ? 'desc' : 'asc';
+        if (params.sortMode === 'asc') {
+          document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort-up"></i> Phone`;
+        } else {
+          document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort-down"></i> Phone`;
+        }
+        fetchData();
+      });
+
+      limitSelect.addEventListener('change', (event) => {
+        if (event.target.value == 'all') {
+          params.limit = 0
+          currentPage = 1;
+        } else {
+          params.limit = parseInt(event.target.value);
+        }
+        fetchData()
+      })
+
+      document.getElementById('search-btn').addEventListener('click', () => {
+        params.query = document.getElementById('search').value;
+        fetchData();
+      })
+
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        params = {
+          page: 1,
+          limit: 5,
+          sortBy: '_id',
+          sortMode: 'desc',
+          query: ''
+        };
+        currentPage = 1;
+        searchInput.value = '';
+        limitSelect.value = '5';
+        document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort me-2"></i> Name`;
+        document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort me-2"></i> Phone`;
+        fetchData();
+      })
+
+      document.getElementById('click', (event) => {
+        if (event.target.closest('.todos-btn')) {
+          event.preventDefault()
+          const userId = event.target.closest('.todos-btn').getAttribute('data-user-id');
+          todo(userId)
+        }
+      })
+
+      fetchData()
+    });
+  </script>
+
+  <%- include('partial/footer.ejs') %>

@@ -6,7 +6,19 @@ module.exports = (mongoose) => {
   const Todo = mongoose.model(
     "todos",
     new mongoose.Schema(
-      { title: String, complete: Boolean, deadline: Date, executor: ObjectId },
+      {
+        title: String,
+        complete: Boolean,
+        deadline: {
+          type: Date,
+          default: () => {
+            const tommorrow = new Date();
+            tommorrow.setDate(tommorrow.getDate() + 1);
+            return tommorrow;
+          },
+        },
+        executor: ObjectId,
+      },
       { versionKey: false }
     )
   );
@@ -24,26 +36,41 @@ module.exports = (mongoose) => {
       sortMode = "desc",
       executor = "",
     } = req.query;
+
     try {
-      const offset = (parseInt(page) - 1) * parseInt(limit);
-      const filter = {
-        ...(title ? { title: { $regex: title, $options: "i" } } : {}),
-        ...(complete ? { complete: complete === "true" } : {}),
-        ...(executor ? { executor: executor } : {}),
-        ...(startDeadline && endDateDeadline
-          ? {
-              deadline: {
-                $gte: new Date(startDeadline),
-                $lte: new Date(endDateDeadline),
-              },
-            }
-          : {}),
-      };
+      const query = {};
+      if (Array.isArray(title)) {
+        query.title = { $in: title.map((t) => new RegExp(t, "i")) };
+      } else if (typeof title === "string" && title.trim() !== "") {
+        query.title = new RegExp(title, "i");
+      }
+      if (complete !== "") query.complete = complete === "true";
+      if (executor) query.executor = executor;
+      if (startDeadline || endDateDeadline) {
+        query.deadline = {};
+        if (startDeadline && endDateDeadline) {
+          query.deadline = {
+            $gte: new Date(startDeadline).toISOString(),
+            $lte: new Date(endDateDeadline).toISOString(),
+          };
+          query.deadline = {
+            $gte: new Date(startDeadline),
+            $lte: new Date(endDateDeadline),
+          };
+        } else if (startDeadline) {
+          query.deadline = { $gte: new Date(startDeadline).toISOString() };
+          query.deadline = { $gte: new Date(startDeadline) };
+        } else if (endDateDeadline) {
+          query.deadline = { $lte: new Date(endDateDeadline).toISOString() };
+          query.deadline = { $lte: new Date(endDateDeadline) };
+        }
+      }
 
       const sortOrder = sortMode === "asc" ? 1 : -1;
-      const total = await Todo.countDocuments(filter);
+      const total = await Todo.countDocuments(query);
       const pages = Math.ceil(total / parseInt(limit));
-      const rows = await Todo.find(filter)
+      const offset = (parseInt(page) - 1) * parseInt(limit);
+      const rows = await Todo.find(query)
         .collation({ locale: "en", strength: 1 })
         .sort({ [sortBy]: sortOrder })
         .limit(parseInt(limit))
@@ -52,56 +79,44 @@ module.exports = (mongoose) => {
       res.status(200).json({
         data: rows,
         total,
-        pages: pages,
+        pages,
         page: parseInt(page),
         limit: parseInt(limit),
+        offset,
       });
     } catch (error) {
       console.error("Error fetching todos:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json("Internal Server Error");
     }
+    // });
 
-    const todosValidation = (req, res, next) => {
-      const { title, complete, deadline, executor } = req.body;
-      if (!title || !complete || !deadline || !executor) {
-        return res
-          .status(400)
-          .json({
-            message: "Title, complete, deadline and executor are required",
-          });
-      }
-      if (
-        typeof title !== "string" ||
-        typeof complete !== "boolean" ||
-        !deadline ||
-        typeof executor !== "string"
-      ) {
-        return res
-          .status(400)
-          .json({
-            message: "Title, complete, deadline and executor must be strings",
-          });
-      }
-      if (
-        title.trim() === "" ||
-        complete === "" ||
-        deadline.trim() === "" ||
-        executor.trim() === ""
-      ) {
-        return res
-          .status(400)
-          .json({
-            message: "Title, complete, deadline and executor cannot be empty",
-          });
-      }
-      next();
-    };
+    //   const sortOrder = sortMode === "asc" ? 1 : -1;
+    //   const total = await Todo.countDocuments(filter);
+    //   const pages = Math.ceil(total / parseInt(limit));
+    //   const offset = (parseInt(page) - 1) * parseInt(limit);
+    //   const rows = await Todo.find(filter)
+    //     .collation({ locale: "en", strength: 1 })
+    //     .sort({ [sortBy]: sortOrder })
+    //     .limit(parseInt(limit))
+    //     .skip(offset);
+
+    //   res.status(200).json({
+    //     data: rows,
+    //     total,
+    //     pages: pages,
+    //     page: parseInt(page),
+    //     limit: parseInt(limit),
+    //   });
+    // } catch (error) {
+    //   console.error("Error fetching todos:", error);
+    //   res.status(500).json({ message: "Internal Server Error" });
+    // }
 
     // GET BY ID
     router.get("/:id", async (req, res) => {
       const { id } = req.params;
       try {
-        const result = await Todo.findOne({ _id: new ObjectId(id) });
+        const result = await Todo.findById(id);
         res.status(200).json(result);
       } catch (error) {
         console.error("Error fetching todo:", error);
@@ -118,46 +133,44 @@ module.exports = (mongoose) => {
           complete: false,
           executor: new ObjectId(executor),
         });
-        res.status(201).json({_id: result._id, title: result.title, complete: result.complete, deadline: result.deadline, executor: result.executor});
+        res.status(201).json({
+          _id: result._id,
+          title: result.title,
+          complete: result.complete,
+          deadline: result.deadline,
+          executor: result.executor,
+        });
       } catch (error) {
         console.error("Error creating todo:", error);
         res.status(500).json({ message: "Internal Server Error" });
       }
     });
 
-    // PUT
-    router.put("/:id", todosValidation, async (req, res) => {
-      const { id } = req.params;
-      const { title, complete, deadline, executor } = req.body;
+    // DELETE
+    router.delete("/:id", async (req, res) => {
       try {
-        const todo = await Todo.findById(id);
-        if (!todo) {
-          return res.status(404).json({ message: "Todo not found" });
-        }
-        todo.title = title;
-        todo.complete = complete;
-        todo.deadline = deadline;
-        todo.executor = executor;
-        await todo.save();
-        res.status(200).json({ message: "Todo updated successfully" });
+        const { id } = req.params;
+        const result = await Todo.deleteOne({ _id: id });
+        res.status(201).json(result);
       } catch (error) {
         console.error("Error updating todo:", error);
         res.status(500).json({ message: "Internal Server Error" });
       }
     });
 
-    // DELETE
-    router.delete("/:id", async (req, res) => {
-      const { id } = req.params;
+    // UPDATE
+    router.put("/:id", async (req, res) => {
       try {
-        const result = await Todo.findOne({ _id: new ObjectId(id) });
-        await Todo.deleteOne({ _id: new ObjectId(id) });
-        if (!result) {
-          return res.status(404).json({ message: "Todo not found" });
-        }
-        res.status(200).json({ message: "Todo deleted successfully" });
+        const { id } = req.params;
+        const { title, complete, deadline } = req.body;
+        const result = await Todo.findByIdAndUpdate(
+          id,
+          { title, complete, deadline },
+          { new: true }
+        );
+        res.status(201).json(result);
       } catch (error) {
-        console.error("Error deleting todo:", error);
+        console.error("Error updating todo:", error);
         res.status(500).json({ message: "Internal Server Error" });
       }
     });
