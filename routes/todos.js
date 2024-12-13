@@ -65,6 +65,7 @@ module.exports = (mongoose) => {
           query.deadline = { $lte: new Date(endDateDeadline) };
         }
       }
+      if (executor) query.executor = executor;
 
       const sortOrder = sortMode === "asc" ? 1 : -1;
       const total = await Todo.countDocuments(query);
@@ -116,7 +117,7 @@ module.exports = (mongoose) => {
     router.get("/:id", async (req, res) => {
       const { id } = req.params;
       try {
-        const result = await Todo.findById(id);
+        const result = await Todo.find({ executor: id });
         res.status(200).json(result);
       } catch (error) {
         console.error("Error fetching todo:", error);
