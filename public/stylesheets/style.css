@@ -10,17 +10,14 @@ a {
     font-size: 14px; 
   } */
 
-#resetButton {
+ #resetButton {
   margin-left: 46px;
-}
+} 
 
-div#showPagination {
-  margin-left: auto;
-}
 
-input#deadlineEnd.form-control {
-  width: 513px;
-}
+ /* input#deadlineEnd.form-control {
+  width: auto ;
+}   */
 
 button.btn.btn-warning.todos-btn {
   padding: 4px 8px;
@@ -29,4 +26,4 @@ button.btn.btn-warning.todos-btn {
 
 /* button#addButton.btn.btn-outline-primary {
   margin-left: 1220px;
-} */
+}  */

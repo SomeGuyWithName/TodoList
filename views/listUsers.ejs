@@ -1,6 +1,6 @@
 <%- include('partial/header.ejs') %>
   <div class="container">
-    <div class="card mt-5">
+    <div class="card mt-3">
       <div class="card-header text-center">
         <h2>MongoDB BREADS(Browse, Read, Edit, Add, Delete, Sorting)</h2>
       </div>
@@ -20,9 +20,9 @@
           <div class="col-md-9 mb-3">
             <div class="input-group">
               <input type="text" class="form-control" id="search" name="search" placeholder="Search">
-              <button type="button" class="btn btn-outline-dark" id="search-btn"><i
+              <button type="submit" class="btn btn-outline-dark" id="search-btn"><i
                   class="fa-solid fa-magnifying-glass"></i></button>
-              <button type="button" class="btn btn-outline-warning" id="reset-btn"><i
+              <button type="submit" class="btn btn-outline-warning" id="reset-btn"><i
                   class="fa-solid fa-arrows-rotate"></i></button>
             </div>
           </div>
@@ -65,25 +65,25 @@
     <div class="modal fade" id="form-Modal" tabindex="-1" aria-labelledby="form-ModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
+          <input type="hidden" id="id" name="id" value="">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="form-ModalLabel">User Form</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
           <form id="users-form">
-            <input type="hidden" id="id" name="id" value="">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="form-ModalLabel">User Form</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
             <div class="modal-body">
               <p id="modal-message"></p>
               <div id="users-data">
                 <div class="row mb-3">
                   <label for="name" class="col-sm-2 col-form-label">Name</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="name" name="name">
+                    <input type="text" class="form-control" id="name" name="name" autocomplete="off">
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label for="phone" class="col-sm-2 col-form-label">Phone</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" id="phone" name="phone">
+                    <input type="text" class="form-control" id="phone" name="phone">
                   </div>
                 </div>
               </div>
@@ -345,24 +345,19 @@
       document.getElementById('s-name').addEventListener('click', () => {
         params.sortBy = 'name';
         params.sortMode = params.sortMode === 'asc' ? 'desc' : 'asc';
-        if (params.sortMode === 'asc') {
-          document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort-up"></i> Name`;
-        } else {
-          document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort-down"></i> Name`;
-        }
+        document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-${params.sortMode === 'asc' ? 'sort-up' : 'sort-down'}"></i> Name`;
+        document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort me-2"></i> Phone`;
         fetchData();
       });
 
       document.getElementById('s-phone').addEventListener('click', () => {
         params.sortBy = 'phone';
         params.sortMode = params.sortMode === 'asc' ? 'desc' : 'asc';
-        if (params.sortMode === 'asc') {
-          document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort-up"></i> Phone`;
-        } else {
-          document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-sort-down"></i> Phone`;
-        }
+        document.getElementById('s-phone').innerHTML = `<i class="fa-solid fa-${params.sortMode === 'asc' ? 'sort-up' : 'sort-down'}"></i> Phone`;
+        document.getElementById('s-name').innerHTML = `<i class="fa-solid fa-sort me-2"></i> Name`;
         fetchData();
       });
+
 
       limitSelect.addEventListener('change', (event) => {
         if (event.target.value == 'all') {
@@ -374,10 +369,31 @@
         fetchData()
       })
 
-      document.getElementById('search-btn').addEventListener('click', () => {
-        params.query = document.getElementById('search').value;
+      limitSelect.addEventListener('change', () => {
+        if (limitSelect.value === '10') {
+          params.page = 1;
+          currentPage = 1;
+        } else {
+          params.limit = parseInt(limitSelect.value);
+        }
         fetchData();
       })
+
+      document.getElementById('search-btn').addEventListener('click', () => {
+        params.query = document.getElementById('search').value;
+        params.page = 1;
+        currentPage = 1;
+        console.log(`No users found: ${params.query}`, params.page);
+
+        fetchData();
+      })
+
+      document.getElementById('search').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault(); // Mencegah form submit default jika ada
+          document.getElementById('search-btn').click();
+        }
+      });
 
       document.getElementById('reset-btn').addEventListener('click', () => {
         params = {
@@ -401,8 +417,7 @@
           const userId = event.target.closest('.todos-btn').getAttribute('data-user-id');
           todo(userId)
         }
-      })
-
+      });
       fetchData()
     });
   </script>

@@ -7,7 +7,7 @@
                 <h3 class="mb-0 card-title text-center flex-grow-1">Todo List</h3>
             </div>
             <div class="card-body">
-                <div class="mb-3 row">
+                <div class="row mb-3">
                     <label for="searchtitle" class="col-sm-2 col-form-label">Title</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="searchtitle" placeholder="Title" name="searchtitle">
@@ -19,8 +19,8 @@
                         <input type="datetime-local" class="form-control" name="deadlineStart" id="deadlineStart"
                             max="2024-12-31">
                     </div>
-                    <div class="col-sm-1 text-center">s.d.</div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-1 text-center"> s.d. </div>
+                    <div class="col-sm-12 col-md-10 col-lg-5 align-self-center ">
                         <input type="datetime-local" class="form-control" name="deadlineEnd" id="deadlineEnd"
                             max="2024-12-31">
                     </div>
@@ -226,7 +226,6 @@
                 const title = addTitle.val().trim();
                 const executor = params.executor;
                 if (title) {
-                    console.log(`Added title: ${title}, executor: ${executor}`);
                     addTodo(title, executor);
                     addTitle.val('');
                 }
@@ -241,7 +240,6 @@
                 viewData = true;
                 console.log(`Params: ${JSON.stringify(params, null, 2)}`);
                 renderTodos();
-                console.log(`defaultApi: ${endpointApi}`);
 
             })
 
@@ -349,6 +347,7 @@
                 }
             });
 
+
             $(window).on('scroll', () => {
                 if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
                     if (viewData && !renderData) {
@@ -356,6 +355,33 @@
                         params.page += 1;
                         renderTodos(true);
                     }
+                }
+            });
+
+            // Menangkap tombol Enter pada input addTitle
+            addTitle.on('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Mencegah submit form default
+                    const title = addTitle.val().trim();
+                    const executor = params.executor;
+                    if (title) {
+                        addTodo(title, executor);
+                        addTitle.val('');
+                    }
+                }
+            });
+
+            searchtitle.on('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Mencegah submit form default
+                    params.title = searchtitle.val() || '';
+                    params.complete = searchcomplete.val() || '';
+                    params.startDeadline = deadlineStart.val() || '';
+                    params.endDateDeadline = deadlineEnd.val() || '';
+                    params.page = 1;
+                    viewData = true;
+                    console.log(`Params: ${JSON.stringify(params, null, 2)}`);
+                    renderTodos();
                 }
             });
 
