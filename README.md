@@ -26,8 +26,8 @@ OR
 
 To check if Node.js is installed, run:
 
-- bash
-node -v
+- Bash/Zsh
+<pre> node -v </pre>
 
 ### Usage
 
