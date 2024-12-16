@@ -29,6 +29,12 @@ To check if Node.js is installed, run:
 - bash
 node -v
 
+### Usage
+
+To start the application in development mode:
+
+<pre> npm run dev </pre>
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
