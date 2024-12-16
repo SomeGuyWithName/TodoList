@@ -21,6 +21,19 @@ OR
  
 - SSH : <pre> git@github.com:ramdaniprnm/Challenge-22-SPA.git </pre>
 
+install depedencies:
+<pre> npm install </pre>
+
+Configure environment variables:
+
+Create a .env file in the root directory and add
+
+<pre> MONGODB_URI=<your-mongodb-uri>
+DB_NAME=<database-name>
+USERS_COLLECTION=<collection-name-for-users>
+TODOS_COLLECTION=<collection-name-for-todos>
+</pre>
+
 
 ### Check Version
 
