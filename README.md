@@ -15,11 +15,11 @@ Before running this project, ensure you have the following installed:
 
 Clone the repository:
 
-- http : <p> https://github.com/ramdaniprnm/Challenge-22-SPA.git </p>
+- http : <pre> https://github.com/ramdaniprnm/Challenge-22-SPA.git </pre>
 
 OR
  
-- SSH : <p> git@github.com:ramdaniprnm/Challenge-22-SPA.git </p>
+- SSH : <pre> git@github.com:ramdaniprnm/Challenge-22-SPA.git </pre>
 
 
 ### Check Version
