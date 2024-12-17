@@ -50,5 +50,5 @@ To start the application in development mode:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [(LICENSE)](https://github.com/ramdaniprnm/Challenge-22-SPA/blob/main/LICENSE) file for details
 
