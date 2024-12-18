@@ -75,6 +75,7 @@
                 <div class="modal-body">
                     <input type="hidden" id="todoForm">
                     <div id="modal-message">
+                        <!-- EDIT FORM -->
                         <div id="todos-edit">
                             <div class="row mb-3">
                                 <label for="title" class="col-sm-2 col-form-label">Title</label>
@@ -91,29 +92,29 @@
                                 </div>
                             </div>
                             <div class="row mb-3 mt-2">
-                                <div class="col-12 col-md-6 col-lg-4 align-self-center">
-                                    <label for="complete" class="form-check-label">Complete</label>
+                                <div class="col-12 col-md-2 col-form-label">
+                                    <label for="complete">Complete</label>
                                 </div>
-                                <div class="col-12 col-md-8 col-lg-4">
+                                <div class="col-12 col-md-6 align-self-center">
                                     <input type="checkbox" class="form-check-input" id="complete">
                                     <label for="complete" class="form-check-label">Done</label>
                                 </div>
                             </div>
                         </div>
                         <div id="todos-delete" class="d-none">
-                            <p>Are you sure you want to delete "<span id="deleteTodo"></span>"?</p>
+                            <p>are you sure you want to delete '<span id="deleteTodo"></span>'?</p>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="modalcontent">Save changes</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="modalcontent">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    </div>
+
+
     <script>
         let params = {
             page: 1,
@@ -143,6 +144,7 @@
         const todoModal = new bootstrap.Modal($('#form-Modal'));
         const todoForm = $('#todoForm');
         const modalContent = $('#modalcontent');
+        const modalDelete = $('#modalDelete');
         const modalmessage = $('#modal-message');
         const formMessage = $('#form-message');
 
@@ -150,12 +152,12 @@
         let renderData = false;
         let viewData = true;
 
-        const queryParams = (params) => {
-            let query = `?executor=${params.executor}&page=${params.page}&limit=${params.limit}&title=${params.title}&sortBy=${params.sortBy}&sortMode=${params.sortMode}`;
-            // if (params.title) query += `&title=${params.title}`;
-            if (params.complete !== undefined) query += `&complete=${params.complete}`;
-            if (params.startDeadline) query += `&startDeadline=${new Date(params.startDeadline).toISOString()}`;
-            if (params.endDateDeadline) query += `&endDateDeadline=${new Date(params.endDateDeadline).toISOString()}`;
+        const queryParams = (param) => {
+            let query = `?executor=${param.executor}&page=${param.page}&limit=${param.limit}&sortBy=${param.sortBy}&sortMode=${param.sortMode}`;
+            if (param.title) query += `&title=${param.title}`;
+            if (param.complete !== undefined) query += `&complete=${param.complete}`;
+            if (param.startDeadline) query += `&startDeadline=${new Date(param.startDeadline).toISOString()}`;
+            if (param.endDateDeadline) query += `&endDateDeadline=${new Date(param.endDateDeadline).toISOString()}`;
             return query
         }
 
@@ -170,23 +172,24 @@
         }
 
         const renderTodos = (isAppend = false) => {
-            if (!isAppend) listTodo.empty(); {
-                fetchTodos().done(function (todos) {
-                    if (todos.data.length === 0) {
-                        viewData = true;
-                        return;
-                    }
-                    console.log(todos);
-                    todos.data.forEach(todo => {
-                        const now = moment();
-                        const date = moment(todo.deadline);
-                        const formatDate = date.format('DD-MM-YYYY HH:mm');
-                        const formatDateYear = date.format('YYYY-MM-DD HH-mm');
-                        const passedDate = date.isBefore(now) && !todo.complete;
+            if (!isAppend) listTodo.empty();
+            fetchTodos().done(function (todos) {
+                if (todos.data.length === 0) {
+                    viewData = true;
+                    return;
+                }
+                console.log(todos);
+                todos.data.forEach(todo => {
+                    const now = moment();
+                    const date = moment(todo.deadline);
+                    const formatDate = date.format('DD-MM-YYYY HH:mm');
+                    const formatDateYear = date.format('YYYY-MM-DD HH-mm');
+                    const passedDate = date.isBefore(now) && !todo.complete;
 
-                        const todoTable = `
+                    // if (listTodo.find(`li[data-id="${todo._id}"]`).length === 0) {
+                    const todoTable = `
                     <li class="list-group-item border-0 rounded d-flex flex-md-row my-2 justify-content-between align-items-center position-relative ${todo.complete ? "bg-success-subtle text-success-emphasis" : passedDate ? "bg-danger-subtle text-danger-emphasis" : "bg-secondary-subtle text-secondary-emphasis"
-                            }" data-id="${todo._id}">
+                        }" data-id="${todo._id}">
                     <p class="fw-medium h-center text-start mb-md-0">${formatDate} ${todo.title}</p>
                     <div class="d-flex gap-2">
                         <button class="btn btn-sm me-2 ${todo.complete ? "text-success-emphasis" : passedDate ? "text-danger-emphasis" : "text-secondary-emphasis"}"
@@ -197,12 +200,11 @@
                         </div>
                         </li>
                         `;
-                        listTodo.append(todoTable);
-                    })
+                    listTodo.append(todoTable);
                 });
                 renderData = false;
-            }
-        }
+            })
+        };
 
         const addTodo = async (title, executor) => {
             $.ajax({
@@ -210,8 +212,9 @@
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ title, executor }),
-                success: (data) => {
-                    console.log(data);
+                success: () => {
+                    console.log(title);
+                    params.page = 1;
                     renderTodos();
                 },
                 error: (error) => {
@@ -236,6 +239,7 @@
                 params.complete = searchcomplete.val() || '';
                 params.startDeadline = deadlineStart.val() || '';
                 params.endDateDeadline = deadlineEnd.val() || '';
+                console.log('endDateLine', params.endDateDeadline);
                 params.page = 1;
                 viewData = true;
                 console.log(`Params: ${JSON.stringify(params, null, 2)}`);
@@ -329,6 +333,7 @@
                 const deadlineTodo = button.data('deadline');
                 const complete = button.data('complete');
                 const formattedDeadline = moment(deadlineTodo, 'YYYY-MM-DD HH-mm').format('YYYY-MM-DDTHH:mm');
+                console.log(``);
 
                 if (action === 'edit') {
                     $('#todos-edit').removeClass('d-none');
@@ -342,16 +347,17 @@
                     $('#todos-edit').addClass('d-none');
                     $('#todos-delete').removeClass('d-none');
                     $('#todoForm').val(id);
-                    $('#deleteTodo').text(`Are you sure you want to delete "${title}"?`);
-                    modalContent.data('action', 'delete');
+                    $('#deleteTodo').text(`'${title}'`);
+                    $('#modalcontent').text('Yes').data('action', 'delete');
+                    console.log(`title: ${title}, id: ${id}, action: ${action}, deleteTodo: ${deleteTodo}`);
+
                 }
             });
 
-
             $(window).on('scroll', () => {
                 if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-                    if (viewData && !renderData) {
-                        // renderData = true;
+                    if (!renderData && viewData) {
+                        renderData = true;
                         params.page += 1;
                         renderTodos(true);
                     }
@@ -384,7 +390,6 @@
                     renderTodos();
                 }
             });
-
             renderTodos();
         });
 

@@ -1,4 +1,5 @@
 var express = require("express");
+const moment = require("moment");
 var router = express.Router();
 
 module.exports = (mongoose) => {
@@ -39,43 +40,42 @@ module.exports = (mongoose) => {
 
     try {
       const query = {};
+      console.log('req.query:', req.query);
       if (Array.isArray(title)) {
         query.title = { $in: title.map((t) => new RegExp(t, "i")) };
       } else if (typeof title === "string" && title.trim() !== "") {
         query.title = new RegExp(title, "i");
       }
       if (complete !== "") query.complete = complete === "true";
-      if (executor) query.executor = executor;
       if (startDeadline || endDateDeadline) {
         query.deadline = {};
         if (startDeadline && endDateDeadline) {
           query.deadline = {
-            $gte: new Date(startDeadline).toISOString(),
-            $lte: new Date(endDateDeadline).toISOString(),
-          };
-          query.deadline = {
             $gte: new Date(startDeadline),
-            $lte: new Date(endDateDeadline),
+            $lte: new Date(moment(endDateDeadline).endOf('minute').toISOString()) 
           };
         } else if (startDeadline) {
-          query.deadline = { $gte: new Date(startDeadline).toISOString() };
           query.deadline = { $gte: new Date(startDeadline) };
         } else if (endDateDeadline) {
-          query.deadline = { $lte: new Date(endDateDeadline).toISOString() };
-          query.deadline = { $lte: new Date(endDateDeadline) };
+          query.deadline = { $lte: new Date(moment(endDateDeadline).endOf('minute').toISOString()) };
         }
+        console.log('query:', query);
       }
+      
       if (executor) query.executor = executor;
 
       const sortOrder = sortMode === "asc" ? 1 : -1;
       const total = await Todo.countDocuments(query);
       const pages = Math.ceil(total / parseInt(limit));
       const offset = (parseInt(page) - 1) * parseInt(limit);
+      console.log('query todos:', query);
+      
       const rows = await Todo.find(query)
         .collation({ locale: "en", strength: 1 })
         .sort({ [sortBy]: sortOrder })
         .limit(parseInt(limit))
         .skip(offset);
+        
 
       res.status(200).json({
         data: rows,
@@ -89,29 +89,6 @@ module.exports = (mongoose) => {
       console.error("Error fetching todos:", error);
       res.status(500).json("Internal Server Error");
     }
-    // });
-
-    //   const sortOrder = sortMode === "asc" ? 1 : -1;
-    //   const total = await Todo.countDocuments(filter);
-    //   const pages = Math.ceil(total / parseInt(limit));
-    //   const offset = (parseInt(page) - 1) * parseInt(limit);
-    //   const rows = await Todo.find(filter)
-    //     .collation({ locale: "en", strength: 1 })
-    //     .sort({ [sortBy]: sortOrder })
-    //     .limit(parseInt(limit))
-    //     .skip(offset);
-
-    //   res.status(200).json({
-    //     data: rows,
-    //     total,
-    //     pages: pages,
-    //     page: parseInt(page),
-    //     limit: parseInt(limit),
-    //   });
-    // } catch (error) {
-    //   console.error("Error fetching todos:", error);
-    //   res.status(500).json({ message: "Internal Server Error" });
-    // }
 
     // GET BY ID
     router.get("/:id", async (req, res) => {
@@ -179,3 +156,8 @@ module.exports = (mongoose) => {
 
   return router;
 };
+
+
+// 
+
+// const obj = {deadline: { $lte: ISODate('2024-12-18T06:39:00.000Z' ) }, executor: ObjectId('675bb4acf9b3ae195037c6d9')}
