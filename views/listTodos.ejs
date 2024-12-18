@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                     <button type="submit" class="btn btn-primary" id="modalcontent">Save changes</button>
                 </div>
             </div>
@@ -349,6 +349,7 @@
                     $('#todoForm').val(id);
                     $('#deleteTodo').text(`'${title}'`);
                     $('#modalcontent').text('Yes').data('action', 'delete');
+
                     console.log(`title: ${title}, id: ${id}, action: ${action}, deleteTodo: ${deleteTodo}`);
 
                 }
