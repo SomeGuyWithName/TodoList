@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Single Page Apllication
 
 ## Getting Started
@@ -52,3 +53,6 @@ To start the application in development mode:
 
 This project is licensed under the MIT License - see the [(LICENSE)](https://github.com/ramdaniprnm/Challenge-22-SPA/blob/main/LICENSE) file for details
 
+=======
+# TodoList
+>>>>>>> e5c6cbbc0168683030c71f378f5c8deda78a8e2a
